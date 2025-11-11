@@ -27,6 +27,7 @@ export default [
                     ignoreRegExpLiterals: true,
                 },
             ],
+            'react/jsx-no-bind': 'off',
         },
     },
 ];
