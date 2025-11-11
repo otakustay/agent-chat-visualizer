@@ -1,8 +1,4 @@
----
-description:
-globs:
-alwaysApply: true
----
+projec
 ## 基本目录结构
 
 代码库是一个由React开发的Web系统，按照以下方式组织：
@@ -53,3 +49,14 @@ import About from '@modules/About';
 1. 在`src/index.tsx`中引入路由组件，即`BrowserRouter`。
 2. 在`src/components/App/index.tsx`中引入顶层路由，一个`Routes`组件嵌套N个`Route`，每一个为一个顶层的URL，对应一个模块。
 3. 更进一步的子路由存放在每一个模块中，在必要的位置引入`Routes`组件即可，模块下的子路由在可能的情况下尽量使用相对路径。
+
+### 单元测试
+
+单元测试的位置永远放在对应文件同级的`__tests__`目录下，测试文件名与实现文件名相同，后续改为`.test.ts`，如：
+
+```
+- utils
+    - lang.ts
+    - __tests__
+        - lang.test.ts
+```

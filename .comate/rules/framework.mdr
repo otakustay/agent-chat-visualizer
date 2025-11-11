@@ -7,3 +7,4 @@ alwaysApply: true
 
 1. 在样式上，当`Tailwind`可以满足时，尽量直接使用`Tailwind`的样式，不要自己编写或使用其它样式方案。
 2. 当需要更复杂的样式逻辑或组件级样式封装时，可以使用`Emotion`（`@emotion/react`和`@emotion/styled`）。
+3. 使用`vitest`进行单元测试，需要测试多个函数使用`describe`，单个用例使用`test`，这些函数都需要事先导入。

@@ -7,24 +7,29 @@
     "build": "rsbuild build",
     "dev": "rsbuild dev --open",
     "lint": "eslint .",
-    "preview": "rsbuild preview"
+    "preview": "rsbuild preview",
+    "test": "vitest --run"
   },
   "dependencies": {
     "@ecomfe/eslint-config": "^9.0.0-beta.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@tailwindcss/postcss": "^4.1.17",
-    "dedent": "^1.7.0",
+    "classnames": "^2.5.1",
     "postcss": "^8.5.6",
     "postcss-loader": "^8.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hot-toast": "^2.6.0",
+    "react-hotkeys-hook": "^5.2.1",
     "react-icons": "^5.5.0",
     "react-router-dom": "^7.9.5",
+    "react-scroll": "^1.9.3",
+    "react-waypoint": "^10.3.0",
     "remark-breaks": "^4.0.0",
     "streamdown": "^1.4.0",
     "tailwindcss": "^4.1.17",
+    "unist-util-visit": "^5.0.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
@@ -32,9 +37,19 @@
     "@rsbuild/plugin-react": "^1.4.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@types/react-scroll": "^1.8.10",
+    "@vitest/ui": "^4.0.8",
+    "dedent": "^1.7.0",
     "dprint": "^0.50.2",
     "eslint": "^9.39.0",
     "husky": "^9.1.7",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  },
+  "overrides": {
+    "react-waypoint": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    }
   }
 }
