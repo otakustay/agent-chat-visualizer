@@ -2,6 +2,7 @@ import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
 import type {ConversationMessageItem} from '../interface';
+import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
 
@@ -9,8 +10,12 @@ function PreviewHeader() {
     return (
         <div className="flex items-center gap-2 p-2 border-b border-gray-300">
             <div className="px-3 py-1.5 text-sm font-medium text-gray-700">Preview</div>
-            <div className="text-xs text-gray-500 ml-auto py-1.5">
-                <span className="font-medium">N</span> Next ? <span className="font-medium">P</span> Previous
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 ml-auto py-1.5">
+                <KeyboardKey>N</KeyboardKey>
+                <span>Next</span>
+                <span>⏐</span>
+                <KeyboardKey>P</KeyboardKey>
+                <span>Previous</span>
             </div>
         </div>
     );

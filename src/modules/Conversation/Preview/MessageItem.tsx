@@ -1,16 +1,8 @@
-import {Streamdown, defaultRehypePlugins, defaultRemarkPlugins} from 'streamdown';
-import remarkBreaks from 'remark-breaks';
 import {Element} from 'react-scroll';
 import {Waypoint} from 'react-waypoint';
 import type {ConversationMessageItem} from '../interface';
 import {preprocessXmlToCodeBlock} from '../Source/utils/string';
-import rehypeUnescapeBackticks from './unescapeBackticks';
-
-const REMARK_PLUGINS = [...Object.values(defaultRemarkPlugins), remarkBreaks];
-const REHYPE_PLUGINS = [
-    ...Object.entries(defaultRehypePlugins).filter(([key]) => key !== 'raw').map(([, plugin]) => plugin),
-    rehypeUnescapeBackticks,
-];
+import MarkdownContent from './MarkdownContent';
 
 interface MessageItemProps {
     message: ConversationMessageItem;
@@ -50,11 +42,7 @@ export default function MessageItem({message, index, onEnter}: MessageItemProps)
 
     const renderContent = () => {
         const processedContent = preprocessXmlToCodeBlock(content);
-        return (
-            <Streamdown remarkPlugins={REMARK_PLUGINS} rehypePlugins={REHYPE_PLUGINS}>
-                {processedContent}
-            </Streamdown>
-        );
+        return <MarkdownContent content={processedContent} />;
     };
 
     return (
