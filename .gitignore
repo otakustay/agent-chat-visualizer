@@ -14,3 +14,4 @@ dist/
 .vscode/*
 !.vscode/extensions.json
 .idea
+.comate/plan.md

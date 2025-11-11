@@ -4,20 +4,21 @@ import toast from 'react-hot-toast';
 import dedent from 'dedent';
 import JsonView from '@/components/JsonView';
 import ActionButton from '@/components/ActionButton';
+import type {ConversationData} from '../interface';
 import {ConversationSchema} from '../interface';
 
 const EXAMPLE_ARRAY_JSON = dedent`
     [
-      {"user": "...", "content": "..."},
-      {"user": "...", "content": "..."}
+      {"role": "...", "content": "..."},
+      {"role": "...", "content": "..."}
     ]
 `;
 
 const EXAMPLE_OBJECT_JSON = dedent`
     {
       "messages": [
-        {"user": "...", "content": "..."},
-        {"user": "...", "content": "..."}
+        {"role": "...", "content": "..."},
+        {"role": "...", "content": "..."}
       ]
     }
 `;
@@ -75,7 +76,11 @@ function EmptyPlaceholder() {
     );
 }
 
-export default function Source() {
+interface SourceProps {
+    onDataChange?: (data: ConversationData | null) => void;
+}
+
+export default function Source({onDataChange}: SourceProps) {
     const [jsonData, setJsonData] = useState<unknown>(null);
     const [highlight, setHighlight] = useState(false);
 
@@ -84,7 +89,6 @@ export default function Source() {
             const text = await navigator.clipboard.readText();
             const parsed = JSON.parse(text) as unknown;
 
-            // 校验JSON结构
             const result = ConversationSchema.safeParse(parsed);
 
             if (!result.success) {
@@ -95,6 +99,7 @@ export default function Source() {
             }
 
             setJsonData(parsed);
+            onDataChange?.(result.data);
             toast.success('JSON validated and pasted successfully');
         }
         catch (error) {

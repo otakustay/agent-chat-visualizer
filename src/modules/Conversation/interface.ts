@@ -1,6 +1,6 @@
 import {z} from 'zod';
 
-const MessageSchema = z.object({user: z.string(), content: z.string()});
+const MessageSchema = z.object({role: z.enum(['system', 'assistant', 'user']), content: z.string()});
 const MessageArraySchema = z.array(MessageSchema);
 const MessageObjectSchema = z.object({messages: MessageArraySchema});
 const ConversationSchema = z.union([MessageArraySchema, MessageObjectSchema]);

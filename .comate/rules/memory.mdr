@@ -6,3 +6,35 @@ alwaysApply: true
 ## 系统记忆
 
 本规则中记录了在历史任务中产生并沉淀的规则，在你的任务执行过程中，需要格外注意此处罗列的条目，并严格遵守。
+
+### JSX 内联逻辑规范
+
+**禁止在 JSX 中内联超过 1 行的逻辑表达式**，包括但不限于：
+
+1. 多行的三元表达式
+2. 多行的 map/filter 等数组方法回调
+3. 多行的条件渲染逻辑
+
+**处理方式：**
+
+- 将多行逻辑提取为独立的 `renderXxx` 函数
+- 对于 `map` 等回调，将回调函数提取为独立函数
+- JSX 中只保留简洁的单行函数调用
+
+**示例：**
+
+```tsx
+// ❌ 错误：多行内联逻辑
+<div>
+  {messages.map((message, index) => (
+    <MessageItem key={index} message={message} />
+  ))}
+</div>
+
+// ✅ 正确：提取为独立函数
+const renderMessageItem = (message: MessageType, index: number) => (
+  <MessageItem key={index} message={message} />
+);
+
+<div>{messages.map(renderMessageItem)}</div>
+```
