@@ -34,11 +34,13 @@
   },
   "devDependencies": {
     "@rsbuild/core": "^1.6.0",
+    "@rsbuild/plugin-babel": "^1.0.6",
     "@rsbuild/plugin-react": "^1.4.1",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/react-scroll": "^1.8.10",
     "@vitest/ui": "^4.0.8",
+    "babel-plugin-react-compiler": "^1.0.0",
     "dedent": "^1.7.0",
     "dprint": "^0.50.2",
     "eslint": "^9.39.0",

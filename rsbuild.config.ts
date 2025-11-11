@@ -1,8 +1,17 @@
-import {defineConfig} from '@rsbuild/core';
+import type {RsbuildConfig} from '@rsbuild/core';
 import {pluginReact} from '@rsbuild/plugin-react';
+import {pluginBabel} from '@rsbuild/plugin-babel';
+import type {PluginBabelOptions} from '@rsbuild/plugin-babel';
 
-export default defineConfig({
-    plugins: [pluginReact()],
+const babelOptions: PluginBabelOptions = {
+    include: /\.(?:jsx|tsx)$/,
+    babelLoaderOptions(opts) {
+        opts.plugins?.unshift('babel-plugin-react-compiler');
+    },
+};
+
+const config: RsbuildConfig = {
+    plugins: [pluginReact(), pluginBabel(babelOptions)],
     tools: {
         postcss: {
             postcssOptions: {
@@ -18,4 +27,6 @@ export default defineConfig({
             '@': './src',
         },
     },
-});
+};
+
+export default config;
