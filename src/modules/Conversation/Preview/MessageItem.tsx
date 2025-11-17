@@ -1,9 +1,36 @@
+import {useState} from 'react';
 import {Element} from 'react-scroll';
 import {Waypoint} from 'react-waypoint';
 import type {ConversationMessageItem} from '../interface';
 import {preprocessXmlToCodeBlock} from '../Source/utils/string';
 import MarkdownContent from './MarkdownContent';
+import MarkdownEditor from './MarkdownEditor';
 import MessageOperations from './MessageOperations';
+
+const getMessageStyles = (role: string) => {
+    switch (role) {
+        case 'system':
+            return {
+                container: 'bg-gray-50 mx-0',
+                wrapper: '',
+            };
+        case 'user':
+            return {
+                container: 'bg-blue-50 ml-0 mr-8',
+                wrapper: '',
+            };
+        case 'assistant':
+            return {
+                container: 'bg-green-50 ml-8 mr-0',
+                wrapper: '',
+            };
+        default:
+            return {
+                container: 'bg-gray-50 mx-0',
+                wrapper: '',
+            };
+    }
+};
 
 interface MessageItemProps {
     message: ConversationMessageItem;
@@ -11,41 +38,49 @@ interface MessageItemProps {
     onEnter: (index: number) => void;
     onCopyAsMarkdown: (index: number) => void;
     onCopyToThis: (index: number) => void;
+    onEditMessage: (index: number, newContent: string) => void;
 }
 
-export default function MessageItem({message, index, onEnter, onCopyAsMarkdown, onCopyToThis}: MessageItemProps) {
+export default function MessageItem(props: MessageItemProps) {
+    const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage} = props;
     const {role, content} = message;
+    const [isEditing, setIsEditing] = useState(false);
+    const styles = getMessageStyles(role);
 
-    const getMessageStyles = () => {
-        switch (role) {
-            case 'system':
-                return {
-                    container: 'bg-gray-50 mx-0',
-                    wrapper: '',
-                };
-            case 'user':
-                return {
-                    container: 'bg-blue-50 ml-0 mr-8',
-                    wrapper: '',
-                };
-            case 'assistant':
-                return {
-                    container: 'bg-green-50 ml-8 mr-0',
-                    wrapper: '',
-                };
-            default:
-                return {
-                    container: 'bg-gray-50 mx-0',
-                    wrapper: '',
-                };
-        }
+    const handleEdit = () => {
+        setIsEditing(true);
     };
 
-    const styles = getMessageStyles();
+    const handleSave = (newContent: string) => {
+        onEditMessage(index, newContent);
+        setIsEditing(false);
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+    };
 
     const renderContent = () => {
         const processedContent = preprocessXmlToCodeBlock(content);
         return <MarkdownContent content={processedContent} />;
+    };
+
+    const renderEditor = () => {
+        return <MarkdownEditor content={content} onSave={handleSave} onCancel={handleCancel} />;
+    };
+
+    const renderOperations = () => {
+        if (isEditing) {
+            return null;
+        }
+
+        return (
+            <MessageOperations
+                onCopyAsMarkdown={() => onCopyAsMarkdown(index)}
+                onCopyToThis={() => onCopyToThis(index)}
+                onEdit={handleEdit}
+            />
+        );
     };
 
     return (
@@ -60,13 +95,10 @@ export default function MessageItem({message, index, onEnter, onCopyAsMarkdown, 
                     <div className="text-xs text-gray-500 font-medium uppercase">
                         {role}
                     </div>
-                    <MessageOperations
-                        onCopyAsMarkdown={() => onCopyAsMarkdown(index)}
-                        onCopyToThis={() => onCopyToThis(index)}
-                    />
+                    {renderOperations()}
                 </div>
                 <div className="text-black text-xs">
-                    {renderContent()}
+                    {isEditing ? renderEditor() : renderContent()}
                 </div>
             </div>
         </Element>

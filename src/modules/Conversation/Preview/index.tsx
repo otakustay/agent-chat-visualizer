@@ -24,8 +24,10 @@ function PreviewHeader() {
 
 interface PreviewProps {
     messages?: ConversationMessageItem[];
+    onEditMessage: (index: number, newContent: string) => void;
 }
-export default function Preview({messages = []}: PreviewProps) {
+
+export default function Preview({messages = [], onEditMessage}: PreviewProps) {
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const handleCopyAsMarkdown = async (index: number) => {
@@ -99,6 +101,7 @@ export default function Preview({messages = []}: PreviewProps) {
             onEnter={handleMessageEnter}
             onCopyAsMarkdown={handleCopyAsMarkdown}
             onCopyToThis={handleCopyToThis}
+            onEditMessage={onEditMessage}
         />
     );
 

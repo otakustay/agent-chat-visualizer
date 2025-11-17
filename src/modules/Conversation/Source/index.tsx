@@ -77,11 +77,11 @@ function EmptyPlaceholder() {
 }
 
 interface SourceProps {
+    data?: ConversationData | null;
     onDataChange?: (data: ConversationData | null) => void;
 }
 
-export default function Source({onDataChange}: SourceProps) {
-    const [jsonData, setJsonData] = useState<unknown>(null);
+export default function Source({data, onDataChange}: SourceProps) {
     const [highlight, setHighlight] = useState(false);
 
     const handlePaste = async () => {
@@ -98,7 +98,6 @@ export default function Source({onDataChange}: SourceProps) {
                 return;
             }
 
-            setJsonData(parsed);
             onDataChange?.(result.data);
             toast.success('JSON validated and pasted successfully');
         }
@@ -115,7 +114,7 @@ export default function Source({onDataChange}: SourceProps) {
     return (
         <div className="h-full flex flex-col border-r border-gray-300">
             <SourceHeader onPaste={handlePaste} highlight={highlight} onHighlightChange={setHighlight} />
-            {jsonData ? <JsonView data={jsonData} highlight={highlight} /> : <EmptyPlaceholder />}
+            {data ? <JsonView data={data} highlight={highlight} /> : <EmptyPlaceholder />}
         </div>
     );
 }

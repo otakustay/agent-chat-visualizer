@@ -18,13 +18,31 @@ export default function ConversationModule() {
         return conversationData.messages;
     };
 
+    const updateMessage = (index: number, newContent: string) => {
+        if (!conversationData) {
+            return;
+        }
+
+        const updatedMessages = [...getMessages()];
+        updatedMessages[index] = {
+            ...updatedMessages[index],
+            content: newContent,
+        };
+
+        const updatedData = Array.isArray(conversationData)
+            ? updatedMessages
+            : {...conversationData, messages: updatedMessages};
+
+        setConversationData(updatedData);
+    };
+
     return (
         <div className="flex h-screen">
             <div className="w-[30%]">
-                <Source onDataChange={setConversationData} />
+                <Source data={conversationData} onDataChange={setConversationData} />
             </div>
             <div className="w-[70%]">
-                <Preview messages={getMessages()} />
+                <Preview messages={getMessages()} onEditMessage={updateMessage} />
             </div>
         </div>
     );

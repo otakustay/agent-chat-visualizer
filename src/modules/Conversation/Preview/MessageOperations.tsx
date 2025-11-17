@@ -1,14 +1,20 @@
-import {FiCopy, FiTrendingUp, FiMoreVertical} from 'react-icons/fi';
+import {FiCopy, FiEdit, FiTrendingUp, FiMoreVertical} from 'react-icons/fi';
 import type {MenuOption} from '../../../components/MenuDropdown';
 import MenuDropdown from '../../../components/MenuDropdown';
 
 interface MessageOperationsProps {
     onCopyAsMarkdown: () => void;
     onCopyToThis: () => void;
+    onEdit: () => void;
 }
 
-export default function MessageOperations({onCopyAsMarkdown, onCopyToThis}: MessageOperationsProps) {
+export default function MessageOperations({onCopyAsMarkdown, onCopyToThis, onEdit}: MessageOperationsProps) {
     const options: MenuOption[] = [
+        {
+            label: 'Edit Markdown',
+            onClick: onEdit,
+            icon: <FiEdit className="w-4 h-4" />,
+        },
         {
             label: 'Copy as Markdown',
             onClick: onCopyAsMarkdown,
