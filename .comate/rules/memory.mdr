@@ -9,140 +9,69 @@ alwaysApply: true
 
 ### JSX 内联逻辑规范
 
-**禁止在 JSX 中内联超过 1 行的逻辑表达式**，包括但不限于：
+禁止在 JSX 中内联超过 1 行的逻辑表达式，包括但不限于：
 
 1. 多行的三元表达式
 2. 多行的 map/filter 等数组方法回调
 3. 多行的条件渲染逻辑
 
-**处理方式：**
+处理方式：
 
 - 将多行逻辑提取为独立的 `renderXxx` 函数
 - 对于 `map` 等回调，将回调函数提取为独立函数
 - JSX 中只保留简洁的单行函数调用
 
-**示例：**
-
-```tsx
-// ❌ 错误：多行内联逻辑
-<div>
-  {messages.map((message, index) => (
-    <MessageItem key={index} message={message} />
-  ))}
-</div>
-
-// ✅ 正确：提取为独立函数
-const renderMessageItem = (message: MessageType, index: number) => (
-  <MessageItem key={index} message={message} />
-);
-
-<div>{messages.map(renderMessageItem)}</div>
-```
-
 ### 多行字符串格式化
 
-**在测试文件或其他需要多行字符串的场景中，使用 `dedent` 库来格式化字符串**，以保持代码的可读性和美观性。
+在需要多行字符串的场景中，使用 `dedent` 库来格式化字符串，以保持代码的可读性和美观性。
 
-**处理方式：**
+处理方式：
 
 - 安装 `dedent` 作为开发依赖
 - 在文件顶部导入 `dedent`
 - 使用 `dedent` 包裹所有多行模板字符串
 - 保持适当的缩进，让代码层次清晰
 
-**示例：**
-
-```typescript
-// ❌ 错误：难以阅读的多行字符串
-const input = `<tool_result>
-<status>succeeded</status>
-</tool_result>`;
-
-// ✅ 正确：使用 dedent 格式化
-import dedent from 'dedent';
-
-const input = dedent`
-    <tool_result>
-    <status>succeeded</status>
-    </tool_result>
-`;
-```
-
 ### 动态类名组装规范
 
-**当遇到较长或复杂的动态 class 组装时，使用 `classnames` 库来提高代码可读性和可维护性**。
+当遇到较长或复杂的动态 class 组装时，使用 `classnames` 库来提高代码可读性和可维护性。
 
-**处理方式：**
+处理方式：
 
 - 安装 `classnames` 依赖
 - 在文件顶部导入 `classNames`
 - 将静态样式按逻辑分组为多个字符串参数
 - 将动态样式使用对象形式表达，键为类名，值为布尔条件
 - 将 `classNames()` 调用提取为独立变量，避免在 JSX 属性中出现多行语句
+- 每组参数添加注释说明类别
 
-**示例：**
+示例：
 
-```tsx
-// ❌ 错误：复杂的模板字符串拼接
-<button
-    className={`
-        w-10 h-10 rounded-full bg-blue-500 text-white
-        flex items-center justify-center shadow-lg transition-all
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600 cursor-pointer'}
-    `}
->
-
-// ✅ 正确：使用 classnames 并提取为变量
-import classNames from 'classnames';
-
-const buttonClassName = classNames(
-    'w-10 h-10 rounded-full bg-blue-500 text-white',
-    'flex items-center justify-center shadow-lg transition-all',
+```js
+classNames(
+    'w-10 h-10 rounded-full',
+    'bg-blue-500 text-white',
+    'flex items-center justify-center',
+    'shadow-lg transition-all',
     {
         'opacity-50 cursor-not-allowed pointer-events-none': disabled,
         'hover:bg-blue-600 active:scale-95 cursor-pointer': !disabled,
     }
-);
-
-<button className={buttonClassName}>
+)
 ```
 
 ### 函数参数提取规范
 
-**当函数只有一个参数且该参数跨多行时，必须将参数提取为独立变量**。
+当函数只有一个参数且该参数跨多行时，必须将参数提取为独立变量。
 
-**处理方式：**
+处理方式：
 
 - 将多行参数提取为独立的常量
 - 如果 TypeScript 允许，必须为该变量标注类型
 - 变量命名应清晰表达其用途
 - 在函数调用时使用该变量
 
-**示例：**
-
-```tsx
-// ❌ 错误：多行参数直接传入函数
-pluginBabel({
-    include: /\.(?:jsx|tsx)$/,
-    babelLoaderOptions(opts) {
-        opts.plugins?.unshift('babel-plugin-react-compiler');
-    },
-})
-
-// ✅ 正确：提取为独立变量并标注类型
-import type {PluginBabelOptions} from '@rsbuild/plugin-babel';
-
-const babelOptions: PluginBabelOptions = {
-    include: /\.(?:jsx|tsx)$/,
-    babelLoaderOptions(opts) {
-        opts.plugins?.unshift('babel-plugin-react-compiler');
-    },
-};
-
-pluginBabel(babelOptions)
-```
-
-**适用场景：**
+适用场景：
 - React 组件的复杂 props 对象
 - 插件配置对象
 - 复杂的函数参数对象

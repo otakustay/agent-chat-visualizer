@@ -3,14 +3,17 @@ import {Waypoint} from 'react-waypoint';
 import type {ConversationMessageItem} from '../interface';
 import {preprocessXmlToCodeBlock} from '../Source/utils/string';
 import MarkdownContent from './MarkdownContent';
+import MessageOperations from './MessageOperations';
 
 interface MessageItemProps {
     message: ConversationMessageItem;
     index: number;
     onEnter: (index: number) => void;
+    onCopyAsMarkdown: (index: number) => void;
+    onCopyToThis: (index: number) => void;
 }
 
-export default function MessageItem({message, index, onEnter}: MessageItemProps) {
+export default function MessageItem({message, index, onEnter, onCopyAsMarkdown, onCopyToThis}: MessageItemProps) {
     const {role, content} = message;
 
     const getMessageStyles = () => {
@@ -57,6 +60,10 @@ export default function MessageItem({message, index, onEnter}: MessageItemProps)
                     <div className="text-xs text-gray-500 font-medium uppercase">
                         {role}
                     </div>
+                    <MessageOperations
+                        onCopyAsMarkdown={() => onCopyAsMarkdown(index)}
+                        onCopyToThis={() => onCopyToThis(index)}
+                    />
                 </div>
                 <div className="text-black text-xs">
                     {renderContent()}

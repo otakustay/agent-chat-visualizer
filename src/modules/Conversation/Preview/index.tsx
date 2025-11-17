@@ -1,6 +1,7 @@
 import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
+import toast from 'react-hot-toast';
 import type {ConversationMessageItem} from '../interface';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
@@ -27,6 +28,27 @@ interface PreviewProps {
 export default function Preview({messages = []}: PreviewProps) {
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const handleCopyAsMarkdown = async (index: number) => {
+        try {
+            const message = messages[index];
+            await navigator.clipboard.writeText(message.content);
+            toast.success('Message content copied to clipboard');
+        }
+        catch {
+            toast.error('Copy failed, please try again');
+        }
+    };
+
+    const handleCopyToThis = async (index: number) => {
+        try {
+            const messagesToCopy = messages.slice(0, index + 1);
+            await navigator.clipboard.writeText(JSON.stringify(messagesToCopy, null, 2));
+            toast.success(`${messagesToCopy.length} messages copied`);
+        }
+        catch {
+            toast.error('Copy failed, please try again');
+        }
+    };
 
     const handleMessageEnter = (index: number) => {
         setCurrentMessageIndex(index);
@@ -75,6 +97,8 @@ export default function Preview({messages = []}: PreviewProps) {
             message={message}
             index={index}
             onEnter={handleMessageEnter}
+            onCopyAsMarkdown={handleCopyAsMarkdown}
+            onCopyToThis={handleCopyToThis}
         />
     );
 
