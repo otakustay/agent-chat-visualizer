@@ -2,7 +2,13 @@ import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
 import toast from 'react-hot-toast';
-import {useConversationKey, useAddSnapshotChild, useCurrentSnapshot, useSetCurrentSnapshot, createSnapshotNode} from '@/atoms/conversation';
+import {
+    useConversationKey,
+    useAddSnapshotChild,
+    useCurrentSnapshot,
+    useSetCurrentSnapshot,
+    createSnapshotNode,
+} from '@/atoms/conversation';
 import {ChangeType, type ConversationMessageItem} from '../interface';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
@@ -138,7 +144,7 @@ export default function Preview() {
     };
 
     return (
-        <div key={conversationKey} className="h-full flex flex-col">
+        <div key={`${conversationKey}/${currentSnapshot.id}`} className="h-full flex flex-col">
             <PreviewHeader />
             <div
                 ref={scrollContainerRef}

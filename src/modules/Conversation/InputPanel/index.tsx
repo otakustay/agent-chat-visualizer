@@ -1,5 +1,11 @@
 import {useState} from 'react';
-import {useConversationKey, useSetSnapshotRoot, useCurrentSnapshot, useSetCurrentSnapshot, createSnapshotNode} from '@/atoms/conversation';
+import {
+    useConversationKey,
+    useSetSnapshotRoot,
+    useCurrentSnapshot,
+    useSetCurrentSnapshot,
+    createSnapshotNode,
+} from '@/atoms/conversation';
 import {ChangeType, type ConversationData} from '../interface';
 import Header from './Header';
 import InputView from './InputView';
@@ -22,7 +28,7 @@ const InputPanel = () => {
         <div className="flex flex-col h-full">
             <Header currentView={currentView} onViewChange={setCurrentView} onDataChange={handleDataChange} />
             <InputView
-                key={conversationKey}
+                key={`${conversationKey}/${currentSnapshot.id}`}
                 currentView={currentView}
                 currentSnapshot={currentSnapshot}
                 onCurrentSnapshotChange={setCurrentSnapshot}

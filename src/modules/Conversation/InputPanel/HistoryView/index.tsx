@@ -4,15 +4,6 @@ import type {SnapshotNode} from '../../interface';
 import {treeToGitGraphList} from './utils';
 import styled from '@emotion/styled';
 
-function generateNodeId(node: SnapshotNode): string {
-    const date = new Date(node.timestamp);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
-
-    return `${hours}${minutes}${seconds}.${milliseconds}`;
-}
 
 interface HistoryViewProps {
     current: SnapshotNode;
@@ -21,7 +12,7 @@ interface HistoryViewProps {
 }
 
 function findNodeById(node: SnapshotNode, id: string): SnapshotNode | null {
-    if (generateNodeId(node) === id) {
+    if (node.id === id) {
         return node;
     }
 
@@ -64,7 +55,7 @@ const HistoryView = ({current, onCurrentSnapshotChange, onViewChange}: HistoryVi
         }
     };
 
-    const graphLines = treeToGitGraphList(root, {currentNode: current, generateNodeId});
+    const graphLines = treeToGitGraphList(root, {currentNode: current});
     const lines: string[] = [
         '---',
         'config:',

@@ -11,7 +11,6 @@ interface TraverseState {
     currentBranch: string;
     output: string[];
     current: SnapshotNode;
-    generateNodeId: (node: SnapshotNode) => string;
 }
 
 function outputNode(target: TraverseTarget, state: TraverseState) {
@@ -21,7 +20,7 @@ function outputNode(target: TraverseTarget, state: TraverseState) {
     }
 
     const commitType = target.node === state.current ? 'HIGHLIGHT' : 'NORMAL';
-    state.output.push(`commit id: "${state.generateNodeId(target.node)}" type: ${commitType}`);
+    state.output.push(`commit id: "${target.node.id}" type: ${commitType}`);
 
     for (const branchNode of target.node.children.slice(1)) {
         const branchName = `Edit-${branchNode.id}`;
@@ -38,7 +37,6 @@ function outputNode(target: TraverseTarget, state: TraverseState) {
 
 interface TreeToGitGraphOptions {
     currentNode: SnapshotNode;
-    generateNodeId: (node: SnapshotNode) => string;
 }
 
 export function treeToGitGraphList(root: SnapshotNode, options: TreeToGitGraphOptions): string[] {
@@ -47,7 +45,6 @@ export function treeToGitGraphList(root: SnapshotNode, options: TreeToGitGraphOp
         currentBranch: DEFAULT_BRANCH,
         output: [],
         current: options.currentNode,
-        generateNodeId: options.generateNodeId,
     };
     outputNode(target, state);
     return state.output;

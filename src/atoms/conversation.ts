@@ -2,13 +2,31 @@ import {atom, useAtom} from 'jotai';
 import type {ConversationData, SnapshotNode} from '../modules/Conversation/interface';
 import {ChangeType} from '../modules/Conversation/interface';
 
-export const createSnapshotNode = (changeType: ChangeType, data: ConversationData): SnapshotNode => ({
-    id: crypto.randomUUID(),
-    timestamp: Date.now(),
-    changeType,
-    data,
-    children: [],
-});
+const generateOptimizedId = (changeType: ChangeType, timestamp: number): string => {
+    if (changeType === ChangeType.Initial) {
+        return 'initial';
+    }
+
+    // 编辑节点使用与原generateNodeId相同的格式
+    const date = new Date(timestamp);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+    return `edit-${hours}${minutes}${seconds}.${milliseconds}`;
+};
+
+export const createSnapshotNode = (changeType: ChangeType, data: ConversationData): SnapshotNode => {
+    const timestamp = Date.now();
+    return {
+        id: generateOptimizedId(changeType, timestamp),
+        timestamp,
+        changeType,
+        data,
+        children: [],
+    };
+};
 
 const conversationKeyAtom = atom<string>(crypto.randomUUID());
 const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode(ChangeType.Initial, {messages: []}));

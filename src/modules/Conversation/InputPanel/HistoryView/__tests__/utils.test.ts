@@ -12,7 +12,7 @@ describe('treeToGitGraphList', () => {
             children: [],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
 
         expect(result).toEqual(['commit id: "A" type: HIGHLIGHT']);
     });
@@ -34,7 +34,7 @@ describe('treeToGitGraphList', () => {
             ],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
 
         expect(result).toEqual(['commit id: "A" type: HIGHLIGHT', 'commit id: "B" type: NORMAL']);
     });
@@ -63,7 +63,7 @@ describe('treeToGitGraphList', () => {
             ],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
         const expected = [
             'commit id: "A" type: HIGHLIGHT',
             'branch Edit-C',
@@ -145,7 +145,7 @@ describe('treeToGitGraphList', () => {
             ],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
         const expected = [
             'commit id: "A" type: HIGHLIGHT',
             'branch Edit-H',
@@ -193,7 +193,7 @@ describe('treeToGitGraphList', () => {
             ],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
         const expected = [
             'commit id: "A" type: HIGHLIGHT',
             'commit id: "B" type: NORMAL',
@@ -256,7 +256,7 @@ describe('treeToGitGraphList', () => {
             ],
         };
 
-        const result = treeToGitGraphList(root, {currentNode: root, generateNodeId: v => v.id});
+        const result = treeToGitGraphList(root, {currentNode: root});
         const expected = [
             'commit id: "A" type: HIGHLIGHT',
             'branch Edit-C',
