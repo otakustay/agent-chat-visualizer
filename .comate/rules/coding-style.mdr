@@ -9,6 +9,19 @@ alwaysApply: true
 
 尽可能不要写注释，除非有一段相当复杂的代码需要说明。
 
+### 模块引用
+
+本项目设置了一个别名，`@`指代`src`目录。
+
+在项目结构上，`src`目录下的第一层为大分类，如`utils`、`components`、`modules`，第二层为具体的功能模块。
+
+在引用模块时，如果被引用的模块与当前模块处于`src`下不同的二层目录，则必须使用`@`来引用，不得使用相对路径。相对的，如果它们处于相同的二层目录，则必须使用相对路径。
+
+示例：
+
+- 从`src/modules/Foo/index.ts`引用`src/components/Bar`，必须使用`@/components/Bar`。
+- 从`src/components/Foo/utils/misc/worker.ts`引用`src/components/Foo/config/default.ts`，必须使用`../../config/default`。
+
 ### 类型定义
 
 类型定义应当尽可能地靠近使用定义的位置，当一个类型仅在一处使用时，类型写在同一个文件中，且不要导出。

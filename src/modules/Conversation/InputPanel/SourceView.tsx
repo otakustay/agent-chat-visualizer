@@ -1,0 +1,53 @@
+import dedent from 'dedent';
+import JsonView from '@/components/JsonView';
+import type {ConversationData} from '../interface';
+
+const EXAMPLE_ARRAY_JSON = dedent`
+    [
+        {"role": "...", "content": "..."},
+        {"role": "...", "content": "..."}
+    ]
+`;
+
+const EXAMPLE_OBJECT_JSON = dedent`
+    {
+        "messages": [
+            {"role": "...", "content": "..."},
+            {"role": "...", "content": "..."}
+        ]
+    }
+`;
+
+const renderEmptyPlaceholder = () => (
+    <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+        <p>Click the Paste button to paste JSON data</p>
+        <div className="mt-4 text-xs text-gray-500">
+            <p className="mb-2 text-center">Example formats</p>
+            <div className="flex flex-col gap-2">
+                <pre className="bg-gray-50 p-2 rounded">
+                    {EXAMPLE_ARRAY_JSON}
+                </pre>
+                <div className="text-center text-gray-400">OR</div>
+                <pre className="bg-gray-50 p-2 rounded">
+                    {EXAMPLE_OBJECT_JSON}
+                </pre>
+            </div>
+        </div>
+    </div>
+);
+
+interface SourceViewProps {
+    data: ConversationData;
+}
+
+const SourceView = ({data}: SourceViewProps) => {
+    const hasMessages = 'messages' in data ? data.messages.length > 0 : data.length > 0;
+
+    return (
+        <div className="h-full flex flex-col">
+            {hasMessages ? <JsonView data={data} highlight={false} /> : renderEmptyPlaceholder()}
+        </div>
+    );
+};
+
+export default SourceView;

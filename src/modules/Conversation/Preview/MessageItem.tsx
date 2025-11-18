@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {Element} from 'react-scroll';
 import {Waypoint} from 'react-waypoint';
 import type {ConversationMessageItem} from '../interface';
-import {preprocessXmlToCodeBlock} from '../Source/utils/string';
+import {preprocessXmlToCodeBlock} from '../utils/string';
 import MarkdownContent from './MarkdownContent';
 import MarkdownEditor from './MarkdownEditor';
 import MessageOperations from './MessageOperations';
@@ -85,7 +85,7 @@ export default function MessageItem(props: MessageItemProps) {
 
     return (
         <Element name={`message-${index}`}>
-            <div className={`rounded-lg p-4 mb-4 scroll-mt-[60px] ${styles.container}`}>
+            <div className={`rounded-lg p-3 mb-4 scroll-mt-[60px] ${styles.container}`}>
                 <Waypoint
                     onEnter={() => onEnter(index)}
                     topOffset={100}

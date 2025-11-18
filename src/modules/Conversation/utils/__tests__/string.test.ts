@@ -1,6 +1,6 @@
 import dedent from 'dedent';
 import {describe, expect, test} from 'vitest';
-import {preprocessXmlToCodeBlock} from './string';
+import {preprocessXmlToCodeBlock} from '../string';
 
 describe('preprocessXmlToCodeBlock', () => {
     test('should convert basic XML to code block', () => {

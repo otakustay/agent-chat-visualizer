@@ -2,7 +2,8 @@ import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
 import toast from 'react-hot-toast';
-import type {ConversationMessageItem} from '../interface';
+import {useConversationKey, useAddSnapshotChild, useCurrentSnapshot, useSetCurrentSnapshot, createSnapshotNode} from '@/atoms/conversation';
+import {ChangeType, type ConversationMessageItem} from '../interface';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
@@ -22,14 +23,33 @@ function PreviewHeader() {
     );
 }
 
-interface PreviewProps {
-    messages?: ConversationMessageItem[];
-    onEditMessage: (index: number, newContent: string) => void;
-}
-
-export default function Preview({messages = [], onEditMessage}: PreviewProps) {
+export default function Preview() {
+    const [conversationKey] = useConversationKey();
+    const [currentSnapshot] = useCurrentSnapshot();
+    const setCurrentSnapshot = useSetCurrentSnapshot();
+    const addSnapshotChild = useAddSnapshotChild();
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const messages = 'messages' in currentSnapshot.data
+        ? currentSnapshot.data.messages
+        : currentSnapshot.data;
+
+    const handleEditMessage = (index: number, newContent: string) => {
+        const updatedMessages = [...messages];
+        updatedMessages[index] = {
+            ...updatedMessages[index],
+            content: newContent,
+        };
+
+        const updatedData = 'messages' in currentSnapshot.data
+            ? {...currentSnapshot.data, messages: updatedMessages}
+            : updatedMessages;
+
+        const newNode = createSnapshotNode(ChangeType.EditContent, updatedData);
+        addSnapshotChild(currentSnapshot, newNode);
+        setCurrentSnapshot(newNode);
+    };
     const handleCopyAsMarkdown = async (index: number) => {
         try {
             const message = messages[index];
@@ -101,7 +121,7 @@ export default function Preview({messages = [], onEditMessage}: PreviewProps) {
             onEnter={handleMessageEnter}
             onCopyAsMarkdown={handleCopyAsMarkdown}
             onCopyToThis={handleCopyToThis}
-            onEditMessage={onEditMessage}
+            onEditMessage={handleEditMessage}
         />
     );
 
@@ -118,7 +138,7 @@ export default function Preview({messages = [], onEditMessage}: PreviewProps) {
     };
 
     return (
-        <div className="h-full flex flex-col">
+        <div key={conversationKey} className="h-full flex flex-col">
             <PreviewHeader />
             <div
                 ref={scrollContainerRef}

@@ -9,3 +9,16 @@ export type ConversationMessageItem = z.infer<typeof MessageSchema>;
 export type ConversationData = z.infer<typeof ConversationSchema>;
 
 export {ConversationSchema};
+
+export enum ChangeType {
+    Initial = 'Initial',
+    EditContent = 'EditContent'
+}
+
+export interface SnapshotNode {
+    id: string;
+    timestamp: number;
+    changeType: ChangeType;
+    data: ConversationData;
+    children: SnapshotNode[];
+}

@@ -1,6 +1,6 @@
 import {FiCopy, FiEdit, FiTrendingUp, FiMoreVertical} from 'react-icons/fi';
-import type {MenuOption} from '../../../components/MenuDropdown';
-import MenuDropdown from '../../../components/MenuDropdown';
+import type {MenuOption} from '@/components/MenuDropdown';
+import MenuDropdown from '@/components/MenuDropdown';
 
 interface MessageOperationsProps {
     onCopyAsMarkdown: () => void;
