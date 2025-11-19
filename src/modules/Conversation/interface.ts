@@ -10,7 +10,7 @@ export type ConversationData = z.infer<typeof ConversationSchema>;
 
 export {ConversationSchema};
 
-export enum ChangeType {
+export const enum ChangeType {
     Initial = 'Initial',
     EditContent = 'EditContent'
 }
