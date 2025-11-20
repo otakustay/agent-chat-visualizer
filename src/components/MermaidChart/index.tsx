@@ -31,9 +31,9 @@ export default function MermaidChart({chart, className = '', id}: MermaidChartPr
                     await renderChart(chart, container);
                 }
                 catch (err) {
-                    const errorMessage = err instanceof Error ? err.message : '渲染失败';
+                    const errorMessage = err instanceof Error ? err.message : 'Render failed';
                     setError(errorMessage);
-                    console.error('Mermaid 渲染失败:', err);
+                    console.error('Mermaid render failed:', err);
                 }
             };
 
@@ -45,7 +45,7 @@ export default function MermaidChart({chart, className = '', id}: MermaidChartPr
     if (error) {
         return (
             <div className="text-red-500 p-4 border border-red-300 rounded">
-                <p className="font-semibold">图表渲染失败</p>
+                <p className="font-semibold">Chart Render Failed</p>
                 <p className="text-sm">{error}</p>
             </div>
         );

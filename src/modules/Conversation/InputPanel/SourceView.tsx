@@ -1,6 +1,6 @@
 import dedent from 'dedent';
 import JsonView from '@/components/JsonView';
-import type {ConversationData} from '../interface';
+import {useCurrentSnapshot} from '@/atoms/conversation';
 
 const EXAMPLE_ARRAY_JSON = dedent`
     [
@@ -36,11 +36,9 @@ const renderEmptyPlaceholder = () => (
     </div>
 );
 
-interface SourceViewProps {
-    data: ConversationData;
-}
-
-const SourceView = ({data}: SourceViewProps) => {
+const SourceView = () => {
+    const currentSnapshot = useCurrentSnapshot();
+    const {data} = currentSnapshot;
     const hasMessages = 'messages' in data ? data.messages.length > 0 : data.length > 0;
 
     return (

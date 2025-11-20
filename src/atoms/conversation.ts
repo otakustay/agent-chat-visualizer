@@ -1,4 +1,4 @@
-import {atom, useAtom} from 'jotai';
+import {atom, useAtom, useSetAtom} from 'jotai';
 import type {ConversationData, SnapshotNode} from '../modules/Conversation/interface';
 import {ChangeType} from '../modules/Conversation/interface';
 
@@ -30,13 +30,45 @@ export const createSnapshotNode = (changeType: ChangeType, data: ConversationDat
 
 const conversationKeyAtom = atom<string>(crypto.randomUUID());
 const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode(ChangeType.Initial, {messages: []}));
-const currentSnapshotAtom = atom<SnapshotNode>(createSnapshotNode(ChangeType.Initial, {messages: []}));
+const currentSnapshotIdAtom = atom<string>('initial');
 
 export const useConversationKey = () => useAtom(conversationKeyAtom);
+
 export const useSnapshotRootValue = () => useAtom(snapshotRootAtom)[0];
-export const useSetSnapshotRoot = () => useAtom(snapshotRootAtom)[1];
-export const useCurrentSnapshot = () => useAtom(currentSnapshotAtom);
-export const useSetCurrentSnapshot = () => useAtom(currentSnapshotAtom)[1];
+
+export const useSetSnapshotRoot = () => useSetAtom(snapshotRootAtom);
+
+// 根据id从root中找到对应的snapshot
+const findSnapshotById = (root: SnapshotNode, id: string): SnapshotNode | null => {
+    if (root.id === id) {
+        return root;
+    }
+
+    for (const child of root.children) {
+        const result = findSnapshotById(child, id);
+        if (result) {
+            return result;
+        }
+    }
+
+    return null;
+};
+
+export const useCurrentSnapshot = () => {
+    const [currentSnapshotId] = useAtom(currentSnapshotIdAtom);
+    const root = useSnapshotRootValue();
+
+    const currentSnapshot = findSnapshotById(root, currentSnapshotId);
+    return currentSnapshot ?? root;
+};
+
+export const useSetCurrentSnapshot = () => {
+    const setCurrentSnapshotId = useSetAtom(currentSnapshotIdAtom);
+
+    return (snapshotId: string) => {
+        setCurrentSnapshotId(snapshotId);
+    };
+};
 
 const findPathToNode = (root: SnapshotNode, target: SnapshotNode, path: SnapshotNode[] = []): SnapshotNode[] | null => {
     if (root.id === target.id) {

@@ -10,6 +10,8 @@ import {
     createSnapshotNode,
 } from '@/atoms/conversation';
 import {ChangeType, type ConversationMessageItem} from '../interface';
+import {useCreateTask} from '@/hooks/useCreateTask';
+import {TaskType} from '@/atoms/taskList';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
@@ -31,9 +33,10 @@ function PreviewHeader() {
 
 export default function Preview() {
     const [conversationKey] = useConversationKey();
-    const [currentSnapshot] = useCurrentSnapshot();
+    const currentSnapshot = useCurrentSnapshot();
     const setCurrentSnapshot = useSetCurrentSnapshot();
     const addSnapshotChild = useAddSnapshotChild();
+    const createTask = useCreateTask();
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +57,10 @@ export default function Preview() {
 
         const newNode = createSnapshotNode(ChangeType.EditContent, updatedData);
         addSnapshotChild(currentSnapshot, newNode);
-        setCurrentSnapshot(newNode);
+        setCurrentSnapshot(newNode.id);
+
+        // 创建编辑消息任务
+        createTask(TaskType.EditMessage, newNode.id);
     };
     const handleCopyAsMarkdown = async (index: number) => {
         try {

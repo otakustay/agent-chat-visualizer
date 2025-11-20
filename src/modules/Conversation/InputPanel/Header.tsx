@@ -2,14 +2,19 @@ import {MdContentPaste, MdHistory, MdSource} from 'react-icons/md';
 import toast from 'react-hot-toast';
 import {ConversationSchema} from '../interface';
 import type {ConversationData} from '../interface';
+import {useSetTaskDrawerOpen, useInputPanelView, useSetInputPanelView} from '@/atoms/ui';
+import TaskListDrawer from '@/modules/Conversation/TaskList/TaskListDrawer';
+import TaskListButton from '@/modules/Conversation/TaskList/TaskListButton';
 
 interface HeaderProps {
-    currentView: 'source' | 'history';
-    onViewChange: (view: 'source' | 'history') => void;
     onDataChange: (data: ConversationData) => void;
 }
 
-const Header = ({currentView, onViewChange, onDataChange}: HeaderProps) => {
+const Header = ({onDataChange}: HeaderProps) => {
+    const setTaskDrawerOpen = useSetTaskDrawerOpen();
+    const currentView = useInputPanelView();
+    const setCurrentView = useSetInputPanelView();
+
     const handlePaste = async () => {
         try {
             const text = await navigator.clipboard.readText();
@@ -23,7 +28,7 @@ const Header = ({currentView, onViewChange, onDataChange}: HeaderProps) => {
             }
 
             onDataChange(result.data);
-            onViewChange('source');
+            setCurrentView('source');
             toast.success('JSON validated and pasted successfully');
         }
         catch (error) {
@@ -37,27 +42,34 @@ const Header = ({currentView, onViewChange, onDataChange}: HeaderProps) => {
     };
 
     const handleToggleView = () => {
-        onViewChange(currentView === 'source' ? 'history' : 'source');
+        setCurrentView(currentView === 'source' ? 'history' : 'source');
     };
 
     return (
-        <div className="flex items-center gap-2 p-2 border-b border-gray-300 border-r border-gray-300">
-            <button
-                className="flex items-center gap-1 px-3 py-1.5 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors cursor-pointer"
-                type="button"
-                onClick={handlePaste}
-            >
-                <MdContentPaste size={16} />
-                Paste
-            </button>
-            <button
-                className="ml-auto w-8 h-8 p-0 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center justify-center cursor-pointer"
-                type="button"
-                onClick={handleToggleView}
-            >
-                {currentView === 'source' ? <MdHistory size={16} /> : <MdSource size={16} />}
-            </button>
-        </div>
+        <>
+            <div className="flex items-center gap-2 p-2 border-b border-gray-300 border-r border-gray-300">
+                <button
+                    className="flex items-center gap-1 px-3 py-1.5 text-sm rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors cursor-pointer"
+                    type="button"
+                    onClick={handlePaste}
+                >
+                    <MdContentPaste size={16} />
+                    Paste
+                </button>
+                <div className="flex items-center gap-1 ml-auto">
+                    <TaskListButton onClick={() => setTaskDrawerOpen(true)} />
+                    <button
+                        className="w-8 h-8 p-0 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center justify-center cursor-pointer"
+                        type="button"
+                        onClick={handleToggleView}
+                    >
+                        {currentView === 'source' ? <MdHistory size={16} /> : <MdSource size={16} />}
+                    </button>
+                </div>
+            </div>
+
+            <TaskListDrawer />
+        </>
     );
 };
 

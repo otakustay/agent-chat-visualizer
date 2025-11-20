@@ -1,8 +1,6 @@
-import {useState} from 'react';
 import {
     useConversationKey,
     useSetSnapshotRoot,
-    useCurrentSnapshot,
     useSetCurrentSnapshot,
     createSnapshotNode,
 } from '@/atoms/conversation';
@@ -11,9 +9,7 @@ import Header from './Header';
 import InputView from './InputView';
 
 const InputPanel = () => {
-    const [currentView, setCurrentView] = useState<'source' | 'history'>('source');
     const [conversationKey, setConversationKey] = useConversationKey();
-    const [currentSnapshot] = useCurrentSnapshot();
     const setSnapshotRoot = useSetSnapshotRoot();
     const setCurrentSnapshot = useSetCurrentSnapshot();
 
@@ -21,19 +17,13 @@ const InputPanel = () => {
         setConversationKey(crypto.randomUUID());
         const newRoot = createSnapshotNode(ChangeType.Initial, data);
         setSnapshotRoot(newRoot);
-        setCurrentSnapshot(newRoot);
+        setCurrentSnapshot(newRoot.id);
     };
 
     return (
         <div className="flex flex-col h-full">
-            <Header currentView={currentView} onViewChange={setCurrentView} onDataChange={handleDataChange} />
-            <InputView
-                key={`${conversationKey}/${currentSnapshot.id}`}
-                currentView={currentView}
-                currentSnapshot={currentSnapshot}
-                onCurrentSnapshotChange={setCurrentSnapshot}
-                onViewChange={setCurrentView}
-            />
+            <Header onDataChange={handleDataChange} />
+            <InputView key={conversationKey} />
         </div>
     );
 };
