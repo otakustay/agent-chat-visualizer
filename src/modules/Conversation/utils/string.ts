@@ -1,3 +1,5 @@
+import {assertNever} from '@/utils/error';
+
 interface NormalState {
     type: 'NORMAL';
 }
@@ -39,7 +41,7 @@ function processCodeBlockState(line: string, result: string[]): State {
 }
 
 function processXmlState(line: string, state: InXmlState, result: string[]): State {
-    result.push(line.replace(/```/g, '\\`\\`\\`'));
+    result.push(line.replaceAll('```', '\\`\\`\\`'));
 
     if (new RegExp(`^\\s*</${state.xmlTagName}>\\s*$`).test(line)) {
         result.push('```');
@@ -102,6 +104,8 @@ export function preprocessXmlToCodeBlock(content: string): string {
             case 'IN_XML':
                 state.current = processXmlState(line, state.current, result);
                 break;
+            default:
+                assertNever<{type: string}>(state.current, v => `Invalid state type ${v.type} processing XML block`);
         }
     }
 

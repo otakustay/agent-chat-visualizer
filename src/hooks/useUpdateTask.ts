@@ -5,7 +5,6 @@ export function useUpdateTask() {
     const setTasks = useSetTaskList();
 
     return (taskId: string, patch: Partial<Task>) => {
-        setTasks(prev => prev.map(task =>
-            (task.id === taskId ? {...task, ...patch} : task)));
+        setTasks(prev => prev.map(task => (task.id === taskId ? {...task, ...patch} : task)));
     };
 }

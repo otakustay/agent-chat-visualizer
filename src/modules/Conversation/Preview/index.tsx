@@ -1,7 +1,7 @@
 import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
-import toast from 'react-hot-toast';
+import {toast} from 'react-hot-toast';
 import {
     useConversationKey,
     useAddSnapshotChild,
@@ -9,7 +9,8 @@ import {
     useSetCurrentSnapshot,
     createSnapshotNode,
 } from '@/atoms/conversation';
-import {ChangeType, type ConversationMessageItem} from '../interface';
+import {ChangeType} from '../interface';
+import type {ConversationMessageItem} from '../interface';
 import {useCreateTask} from '@/hooks/useCreateTask';
 import {TaskType} from '@/atoms/taskList';
 import KeyboardKey from './KeyboardKey';

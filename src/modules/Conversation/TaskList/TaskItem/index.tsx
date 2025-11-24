@@ -24,7 +24,6 @@ const getStatusIcon = (status: TaskStatus) => {
 
 const getTaskTypeLabel = (task: Task) => {
     switch (task.type) {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         case TaskType.EditMessage:
             return 'Edit Message';
         default:

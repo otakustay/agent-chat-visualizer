@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["DOM", "ES2024"],
+    "lib": ["DOM", "ES2024", "DOM.Iterable"],
     "jsx": "react-jsx",
     "target": "ES2024",
     "noEmit": true,

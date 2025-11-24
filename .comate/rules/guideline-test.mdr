@@ -1,0 +1,38 @@
+---
+description: 单元测试相关规则
+globs: **/*.test.ts, **/*.test.tsx
+alwaysApply: false
+---
+## 单元测试
+
+单元测试的位置永远放在对应文件同级的`__tests__`目录下，测试文件名与实现文件名相同，后续改为`.test.ts`，如：
+
+```
+- utils
+    - lang.ts
+    - __tests__
+        - lang.test.ts
+```
+
+如果你发现有单元测试文件未按照以上目录结构放置，你必须第一时间对文件位置进行移动，使测试与实现代码的文件有一一对应关系。
+
+### 测试代码框架
+
+单元测试框架为Vitest，单测文件结构如下：
+
+1. 使用`import`从`vitest`包引入测试用的函数，如`expect`、`test`等。
+2. 对于每一个测试的目标，包含一个`desribe`函数的调用，其`title`参数为测试目标名。
+3. 在每一个`describe`函数内，使用`test`函数编写测试用例。
+
+### 测试用例编写要求
+
+对于相对复杂的数据结构的比对，首先定义一个`expected`变量表示正确的结果，随后断言的代码形如`expect(result).toDeepEqual(expected)`。不要直接在`toDeepEqual`等函数内内联复杂对象。
+
+对于快照测试，如`toMatchSnapshot`，要使用`test`函数的测试用例中提供的`expect`函数，如：
+
+```ts
+test('some test', (expect) => {
+    // ...
+    expect(element).toMatchSnapshot();
+});
+```

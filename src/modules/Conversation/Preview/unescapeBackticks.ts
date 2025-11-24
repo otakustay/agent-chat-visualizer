@@ -29,7 +29,7 @@ export default function rehypeUnescapeBackticks() {
                     if (isXml && node.children.length > 0) {
                         const textNode = node.children[0];
                         if (textNode.type === 'text') {
-                            textNode.value = textNode.value.replace(/\\`/g, '`');
+                            textNode.value = textNode.value.replaceAll('\\`', '`');
                         }
                     }
                 }

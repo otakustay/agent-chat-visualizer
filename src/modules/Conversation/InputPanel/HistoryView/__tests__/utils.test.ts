@@ -1,6 +1,7 @@
 import {describe, test, expect} from 'vitest';
 import {treeToGitGraphList} from '../utils';
-import {ChangeType, type SnapshotNode} from '../../../interface';
+import {ChangeType} from '../../../interface';
+import type {SnapshotNode} from '../../../interface';
 
 describe('treeToGitGraphList', () => {
     test('单个根节点', () => {

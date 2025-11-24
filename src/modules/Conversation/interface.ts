@@ -12,7 +12,7 @@ export {ConversationSchema};
 
 export const enum ChangeType {
     Initial = 'Initial',
-    EditContent = 'EditContent'
+    EditContent = 'EditContent',
 }
 
 export interface SnapshotNode {

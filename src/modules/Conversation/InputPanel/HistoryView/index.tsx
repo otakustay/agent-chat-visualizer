@@ -41,7 +41,7 @@ const HistoryView = () => {
         if (target.tagName.toLowerCase() !== 'circle') {
             return;
         }
-        const nodeId = Array.from(target.classList).at(1);
+        const nodeId = [...target.classList].at(1);
         if (!nodeId) {
             return;
         }

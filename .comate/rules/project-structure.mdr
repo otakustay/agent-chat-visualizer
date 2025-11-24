@@ -1,9 +1,15 @@
-projec
+---
+description:
+globs:
+alwaysApply: true
+---
 ## 基本目录结构
 
 代码库是一个由React开发的Web系统，按照以下方式组织：
 
 - src # 存放所有源码
+    - atoms # 用于jotai的全局状态
+        - foo.ts # 一组全局状态
     - components # 可复用的组件，通常为纯视觉和交互，不包含特定模块的业务
         - FooBar # 所有组件都必须是一个目录，使用PascalCase命名
             - index.tsx # 每个组件目录必须有一个index.tsx文件导出默认组件
@@ -15,33 +21,6 @@ projec
     - utils #工具函数
         - string.ts # 按功能分类工具函数到具体文件，使用命名导出不同函数
 
-### 模块
-
-“模块”是系统中的一个概念，指代一个独立的业务功能，所有模块存放在`src/modules`目录下。
-
-从技术角度，原则上一个模块对应一个顶级的路由，比如“产品介绍”对应路由`/about`，对应模块`/src/modules/About`目录。
-
-每一个模块目录下有一个`index.tsx`，使用默认导出提供顶层路由对应的组件，如：
-
-```tsx
-export default function AboutModule() {
-    return ...;
-}
-```
-
-这些模块随后被`src/components/App.tsx`引入，如：
-
-```tsx
-import About from '@modules/About';
-
-<Routes>
-    <Route path="/about" elements={<About />} />
-</Routes>
-```
-
-通常来说，模块下的`index.tsx`中的组件名称为模块名称加上`Module`后缀。
-
-
 ### 路由
 
 项目由`react-router`驱动，路由分为以下几部分：
@@ -49,14 +28,3 @@ import About from '@modules/About';
 1. 在`src/index.tsx`中引入路由组件，即`BrowserRouter`。
 2. 在`src/components/App/index.tsx`中引入顶层路由，一个`Routes`组件嵌套N个`Route`，每一个为一个顶层的URL，对应一个模块。
 3. 更进一步的子路由存放在每一个模块中，在必要的位置引入`Routes`组件即可，模块下的子路由在可能的情况下尽量使用相对路径。
-
-### 单元测试
-
-单元测试的位置永远放在对应文件同级的`__tests__`目录下，测试文件名与实现文件名相同，后续改为`.test.ts`，如：
-
-```
-- utils
-    - lang.ts
-    - __tests__
-        - lang.test.ts
-```

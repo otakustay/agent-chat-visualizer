@@ -2,14 +2,14 @@ import {atom, useAtomValue, useSetAtom} from 'jotai';
 
 // 任务类型枚举
 export const enum TaskType {
-    EditMessage = 'EditMessage'
+    EditMessage = 'EditMessage',
 }
 
 // 任务状态枚举
 export const enum TaskStatus {
     Running = 'Running',
     Failed = 'Failed',
-    Completed = 'Completed'
+    Completed = 'Completed',
 }
 
 // 基础任务接口

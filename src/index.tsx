@@ -4,7 +4,7 @@ import {BrowserRouter as Router} from 'react-router-dom';
 import App from '@/components/App';
 import './index.css';
 
-const rootEl = document.getElementById('root');
+const rootEl = document.querySelector('#root');
 if (rootEl) {
     const root = ReactDOM.createRoot(rootEl);
     root.render(

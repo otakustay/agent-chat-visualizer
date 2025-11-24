@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import mermaid from 'mermaid';
 import classNames from 'classnames';
 import {generateRandomId} from '@/utils/string';
+import {stringifyError} from '@/utils/error';
 
 interface MermaidChartProps {
     chart: string;
@@ -30,10 +31,9 @@ export default function MermaidChart({chart, className = '', id}: MermaidChartPr
                     setError(null);
                     await renderChart(chart, container);
                 }
-                catch (err) {
-                    const errorMessage = err instanceof Error ? err.message : 'Render failed';
-                    setError(errorMessage);
-                    console.error('Mermaid render failed:', err);
+                catch (ex) {
+                    setError(stringifyError(ex));
+                    console.error('Mermaid render failed:', ex);
                 }
             };
 

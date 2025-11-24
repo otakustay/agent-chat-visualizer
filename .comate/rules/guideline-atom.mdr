@@ -1,0 +1,59 @@
+---
+description: 编写全局状态及使用jotai库的规范
+globs: src/atoms/**
+alwaysApply: false
+---
+## 全局状态
+
+项目中的全局状态统一使用`jotai`库管理，代码集中在`src/atoms`目录下。
+
+在目录下，每一个文件代表为**一组**全局状态，分组有一定的语义性，如`conversation.ts`表示与会话展示、操作有关的状态，`ui.ts`表示具体业务无关、全局视图层面的。
+
+### 全局状态声明
+
+一个全局状态可以使用`atom`或`atomFamily`来声明，但**不得直接将状态对象导出**。
+
+对于每一个`atom`，需要至少导出2个Hook，分别`useFooValue`导出读取状态，`useSetFoo`导出更新状态，它们分别使用`useAtomValue`和`useSetAtom`实现。对于`atomFamily`同理。
+
+```ts
+// 注意，不导出
+const foo = atom('foo');
+
+export function useFooValue() {
+    return useAtomValue(foo);
+}
+
+export function useSetFoo() {
+    return useSetAtom(foo);
+}
+```
+
+### 封装业务逻辑
+
+如果有一段业务逻辑具备复用性，且只与全局状态交互，那么应当被封装在`src/atoms`目录下，与对应全局状态相同的代码文件中。
+
+在`src/atoms`下，一个文件允许引用其它的`atom`文件，但要注意不得让各文件最终产生环型的引用。
+
+例如，在一个表单提交后，需要关闭弹窗、切换视图到初始状态、更新服务器返回的最新状态到全局，则可以封装成一个统一的Hook：
+
+```ts
+import {useSetDrawerOpen} from './ui.ts';
+import {useSetViewMode} from './view.ts';
+
+const pageData = atom({});
+
+// usePageDataValue, useSetPageData
+
+export function useSubmitPageData() {
+    const setDrawerOpen = useSetDrawerOpen();
+    const setViewMode = useSetViewMode();
+
+    return async (data: PageData) => {
+        const result = await submitToServer(data);
+
+        setDrawerOpen(false);
+        setViewMode('initial');
+        setPageData(result);
+    };
+}
+```

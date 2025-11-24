@@ -1,10 +1,10 @@
 import {MdContentPaste, MdHistory, MdSource} from 'react-icons/md';
-import toast from 'react-hot-toast';
-import {ConversationSchema} from '../interface';
-import type {ConversationData} from '../interface';
+import {toast} from 'react-hot-toast';
 import {useSetTaskDrawerOpen, useInputPanelView, useSetInputPanelView} from '@/atoms/ui';
 import TaskListDrawer from '@/modules/Conversation/TaskList/TaskListDrawer';
 import TaskListButton from '@/modules/Conversation/TaskList/TaskListButton';
+import {ConversationSchema} from '../interface';
+import type {ConversationData} from '../interface';
 
 interface HeaderProps {
     onDataChange: (data: ConversationData) => void;
@@ -31,8 +31,8 @@ const Header = ({onDataChange}: HeaderProps) => {
             setCurrentView('source');
             toast.success('JSON validated and pasted successfully');
         }
-        catch (error) {
-            if (error instanceof SyntaxError) {
+        catch (ex) {
+            if (ex instanceof SyntaxError) {
                 toast.error('Clipboard content is not valid JSON');
             }
             else {

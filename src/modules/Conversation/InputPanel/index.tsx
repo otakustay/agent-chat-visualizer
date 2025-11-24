@@ -4,7 +4,8 @@ import {
     useSetCurrentSnapshot,
     createSnapshotNode,
 } from '@/atoms/conversation';
-import {ChangeType, type ConversationData} from '../interface';
+import {ChangeType} from '../interface';
+import type {ConversationData} from '../interface';
 import Header from './Header';
 import InputView from './InputView';
 
