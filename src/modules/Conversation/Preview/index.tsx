@@ -2,6 +2,7 @@ import {useState, useRef} from 'react';
 import {useHotkeys} from 'react-hotkeys-hook';
 import {scroller} from 'react-scroll';
 import {toast} from 'react-hot-toast';
+import {MdMessage} from 'react-icons/md';
 import {
     useConversationKey,
     useAddSnapshotChild,
@@ -13,9 +14,11 @@ import {ChangeType} from '../interface';
 import type {ConversationMessageItem} from '../interface';
 import {useCreateTask} from '@/hooks/useCreateTask';
 import {TaskType} from '@/atoms/taskList';
+import {useSetModelGenerationDrawerOpen} from '@/atoms/ui';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
+import ModelGenerationDrawer from '../ModelGenerationDrawer';
 
 function PreviewHeader() {
     return (
@@ -38,6 +41,7 @@ export default function Preview() {
     const setCurrentSnapshot = useSetCurrentSnapshot();
     const addSnapshotChild = useAddSnapshotChild();
     const createTask = useCreateTask();
+    const setModelGenerationDrawerOpen = useSetModelGenerationDrawerOpen();
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -175,7 +179,16 @@ export default function Preview() {
                     containerId="preview-scroll-container"
                     onClick={handleNextClick}
                 />
+                <button
+                    className="w-10 h-10 p-0 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 flex items-center justify-center cursor-pointer transition-colors"
+                    type="button"
+                    onClick={() => setModelGenerationDrawerOpen(true)}
+                    title="Model Generation"
+                >
+                    <MdMessage size={20} />
+                </button>
             </div>
+            <ModelGenerationDrawer />
         </div>
     );
 }

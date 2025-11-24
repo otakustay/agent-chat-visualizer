@@ -13,6 +13,7 @@ export {ConversationSchema};
 export const enum ChangeType {
     Initial = 'Initial',
     EditContent = 'EditContent',
+    GenerateByModel = 'GenerateByModel',
 }
 
 export interface SnapshotNode {

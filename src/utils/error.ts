@@ -5,3 +5,10 @@ export function stringifyError(mayBeError: unknown): string {
 export function assertNever<T = unknown>(value: never, stringify: (value: T) => string): never {
     throw new Error(stringify(value));
 }
+
+export class ValidationError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ValidationError';
+    }
+}

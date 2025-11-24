@@ -9,7 +9,6 @@ const babelOptions: PluginBabelOptions = {
         opts.plugins?.unshift('babel-plugin-react-compiler');
     },
 };
-
 const config: RsbuildConfig = {
     plugins: [pluginReact(), pluginBabel(babelOptions)],
     tools: {
@@ -18,6 +17,13 @@ const config: RsbuildConfig = {
                 plugins: ['@tailwindcss/postcss'],
             },
         },
+    },
+    performance: {
+        buildCache: false,
+        printFileSize: false,
+    },
+    dev: {
+        progressBar: false,
     },
     html: {
         favicon: './public/favicon.svg',

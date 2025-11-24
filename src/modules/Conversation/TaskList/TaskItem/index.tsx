@@ -26,6 +26,8 @@ const getTaskTypeLabel = (task: Task) => {
     switch (task.type) {
         case TaskType.EditMessage:
             return 'Edit Message';
+        case TaskType.ModelGeneration:
+            return `Generate (${task.modelId})`;
         default:
             return 'Unknown Task';
     }
@@ -36,6 +38,10 @@ export default function TaskItem({task}: TaskItemProps) {
     const setInputPanelView = useSetInputPanelView();
 
     const handleSnapshotClick = () => {
+        if (!task.snapshotId) {
+            return;
+        }
+
         setCurrentSnapshot(task.snapshotId);
         setDrawerOpen(false);
         setInputPanelView('source');

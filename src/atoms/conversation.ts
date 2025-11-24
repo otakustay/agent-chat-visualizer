@@ -119,3 +119,33 @@ export const useAddSnapshotChild = () => {
         setRoot(newRoot);
     };
 };
+
+// 通用的修改snapshot的hook
+export const useUpdateSnapshot = () => {
+    const root = useSnapshotRootValue();
+    const setRoot = useSetSnapshotRoot();
+    const setCurrentSnapshot = useSetCurrentSnapshot();
+
+    return (snapshotId: string, updater: (snapshot: SnapshotNode) => SnapshotNode) => {
+        const findAndUpdate = (node: SnapshotNode): SnapshotNode => {
+            if (node.id === snapshotId) {
+                return updater(node);
+            }
+
+            return {
+                ...node,
+                children: node.children.map(findAndUpdate),
+            };
+        };
+
+        const newRoot = findAndUpdate(root);
+        setRoot(newRoot);
+
+        // 如果更新的是当前snapshot，也要更新当前选中的snapshot
+        const currentSnapshot = findSnapshotById(root, snapshotId);
+        if (currentSnapshot) {
+            const updatedSnapshot = updater(currentSnapshot);
+            setCurrentSnapshot(updatedSnapshot.id);
+        }
+    };
+};

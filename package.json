@@ -11,11 +11,13 @@
     "lint-staged": "lint-staged",
     "preview": "rsbuild preview",
     "test": "vitest --run",
-    "ci": "npm ci && npm run lint && npm run build && npm run test"
+    "type-check": "tsc",
+    "ci": "npm ci && npm run lint && npm run build && npm run type-check && npm run test"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@lobehub/icons": "^2.43.1",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@tailwindcss/postcss": "^4.1.17",
     "@uiw/react-md-editor": "^4.0.8",
@@ -67,6 +69,10 @@
   },
   "overrides": {
     "react-waypoint": {
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
+    },
+    "@lobehub/ui": {
       "react": "^19.0.0",
       "react-dom": "^19.0.0"
     }

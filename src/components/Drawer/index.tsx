@@ -8,10 +8,11 @@ interface DrawerProps {
     open: boolean;
     onClose: () => void;
     title: string;
+    footer?: React.ReactNode;
     children: React.ReactNode;
 }
 
-export default function Drawer({open, onClose, title, children}: DrawerProps) {
+export default function Drawer({open, onClose, title, footer, children}: DrawerProps) {
     useHotkeys('esc', onClose, {enabled: open});
 
     if (!open) {
@@ -61,6 +62,7 @@ export default function Drawer({open, onClose, title, children}: DrawerProps) {
                 <div className="flex-1 overflow-y-auto p-5">
                     {children}
                 </div>
+                {footer && <div className="border-t border-gray-200 p-4 bg-gray-50">{footer}</div>}
             </div>
         </RemoveScroll>,
         document.body
