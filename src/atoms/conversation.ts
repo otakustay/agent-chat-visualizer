@@ -1,35 +1,21 @@
 import {atom, useAtom, useSetAtom} from 'jotai';
 import type {ConversationData, SnapshotNode} from '../modules/Conversation/interface';
 import {ChangeType} from '../modules/Conversation/interface';
+import {getCurrentTimestamp} from '@/utils/time';
 
-const generateOptimizedId = (changeType: ChangeType, timestamp: number): string => {
-    if (changeType === ChangeType.Initial) {
-        return 'initial';
-    }
-
-    // 编辑节点使用与原generateNodeId相同的格式
-    const date = new Date(timestamp);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-    const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
-
-    return `edit-${hours}${minutes}${seconds}.${milliseconds}`;
-};
-
-export const createSnapshotNode = (changeType: ChangeType, data: ConversationData): SnapshotNode => {
-    const timestamp = Date.now();
+export function createSnapshotNode(id: string, changeType: ChangeType, data: ConversationData): SnapshotNode {
+    const timestamp = getCurrentTimestamp();
     return {
-        id: generateOptimizedId(changeType, timestamp),
+        id,
         timestamp,
         changeType,
         data,
         children: [],
     };
-};
+}
 
 const conversationKeyAtom = atom<string>(crypto.randomUUID());
-const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode(ChangeType.Initial, {messages: []}));
+const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode('initial', ChangeType.Initial, {messages: []}));
 const currentSnapshotIdAtom = atom<string>('initial');
 
 export const useConversationKey = () => useAtom(conversationKeyAtom);
@@ -166,7 +152,11 @@ export const useSliceToThis = () => {
 
         // 创建新的快照数据
         const newSnapshotData = {messages: slicedMessages};
-        const newSnapshot = createSnapshotNode(ChangeType.Slice, newSnapshotData);
+        const newSnapshot = createSnapshotNode(
+            `slice-${messageIndex + 1}-${getCurrentTimestamp()}`,
+            ChangeType.Slice,
+            newSnapshotData
+        );
 
         // 添加到快照树
         addSnapshotChild(currentSnapshot, newSnapshot);

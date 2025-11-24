@@ -16,6 +16,7 @@ import type {ConversationMessageItem} from '../interface';
 import {useCreateTask} from '@/hooks/useCreateTask';
 import {TaskType, useCreateSliceTask} from '@/atoms/taskList';
 import {useSetModelGenerationDrawerOpen} from '@/atoms/ui';
+import {toTimeString, getCurrentTimestamp} from '@/utils/time';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
@@ -63,7 +64,11 @@ export default function Preview() {
             ? {...currentSnapshot.data, messages: updatedMessages}
             : updatedMessages;
 
-        const newNode = createSnapshotNode(ChangeType.EditContent, updatedData);
+        const newNode = createSnapshotNode(
+            `edit-${toTimeString(getCurrentTimestamp())}`,
+            ChangeType.EditContent,
+            updatedData
+        );
         addSnapshotChild(currentSnapshot, newNode);
         setCurrentSnapshot(newNode.id);
 

@@ -4,6 +4,7 @@ import type {ModelGenerationTask} from '@/atoms/taskList';
 import {useSetTaskList, useUpdateTaskById, TaskType, TaskStatus} from '@/atoms/taskList';
 import {useAddSnapshotChild, useCurrentSnapshot, createSnapshotNode} from '@/atoms/conversation';
 import {ChangeType} from '@/modules/Conversation/interface';
+import {getCurrentTimestamp} from '@/utils/time';
 
 export function useModelGeneration() {
     const setTaskList = useSetTaskList();
@@ -31,12 +32,16 @@ export function useModelGeneration() {
                 : currentSnapshot.data;
 
             const newSnapshot = createSnapshotNode(
+                `generate-${request.modelId}-${getCurrentTimestamp()}`,
                 ChangeType.GenerateByModel,
                 {
-                    messages: [...messages, {
-                        role: 'assistant' as const,
-                        content: content,
-                    }],
+                    messages: [
+                        ...messages,
+                        {
+                            role: 'assistant' as const,
+                            content: content,
+                        },
+                    ],
                 }
             );
 

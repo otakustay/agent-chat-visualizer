@@ -16,7 +16,7 @@ const InputPanel = () => {
 
     const handleDataChange = (data: ConversationData) => {
         setConversationKey(crypto.randomUUID());
-        const newRoot = createSnapshotNode(ChangeType.Initial, data);
+        const newRoot = createSnapshotNode('initial', ChangeType.Initial, data);
         setSnapshotRoot(newRoot);
         setCurrentSnapshot(newRoot.id);
     };
