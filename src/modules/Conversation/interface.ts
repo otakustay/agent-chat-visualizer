@@ -14,6 +14,7 @@ export const enum ChangeType {
     Initial = 'Initial',
     EditContent = 'EditContent',
     GenerateByModel = 'GenerateByModel',
+    Slice = 'Slice',
 }
 
 export interface SnapshotNode {

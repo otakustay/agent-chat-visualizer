@@ -9,11 +9,12 @@ import {
     useCurrentSnapshot,
     useSetCurrentSnapshot,
     createSnapshotNode,
+    useSliceToThis,
 } from '@/atoms/conversation';
 import {ChangeType} from '../interface';
 import type {ConversationMessageItem} from '../interface';
 import {useCreateTask} from '@/hooks/useCreateTask';
-import {TaskType} from '@/atoms/taskList';
+import {TaskType, useCreateSliceTask} from '@/atoms/taskList';
 import {useSetModelGenerationDrawerOpen} from '@/atoms/ui';
 import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
@@ -42,6 +43,8 @@ export default function Preview() {
     const addSnapshotChild = useAddSnapshotChild();
     const createTask = useCreateTask();
     const setModelGenerationDrawerOpen = useSetModelGenerationDrawerOpen();
+    const sliceToThis = useSliceToThis();
+    const createSliceTask = useCreateSliceTask();
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -87,6 +90,12 @@ export default function Preview() {
         catch {
             toast.error('Copy failed, please try again');
         }
+    };
+
+    const handleSliceToThis = (index: number) => {
+        const newSnapshot = sliceToThis(index);
+        createSliceTask(newSnapshot.id, index);
+        toast.success(`Conversation sliced to message #${index + 1}`);
     };
 
     const handleMessageEnter = (index: number) => {
@@ -139,6 +148,7 @@ export default function Preview() {
             onCopyAsMarkdown={handleCopyAsMarkdown}
             onCopyToThis={handleCopyToThis}
             onEditMessage={handleEditMessage}
+            onSliceToThis={handleSliceToThis}
         />
     );
 

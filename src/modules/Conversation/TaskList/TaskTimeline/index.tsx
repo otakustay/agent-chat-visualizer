@@ -12,9 +12,12 @@ export default function TaskTimeline() {
         );
     }
 
+    // 按时间倒序排序（最新的任务在最前面）
+    const sortedTasks = [...tasks].toSorted((a, b) => b.timestamp - a.timestamp);
+
     return (
         <div className="space-y-1">
-            {tasks.map(task => <TaskItem key={task.id} task={task} />)}
+            {sortedTasks.map(task => <TaskItem key={task.id} task={task} />)}
         </div>
     );
 }

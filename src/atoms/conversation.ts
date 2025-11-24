@@ -149,3 +149,31 @@ export const useUpdateSnapshot = () => {
         }
     };
 };
+
+export const useSliceToThis = () => {
+    const currentSnapshot = useCurrentSnapshot();
+    const addSnapshotChild = useAddSnapshotChild();
+    const setCurrentSnapshot = useSetCurrentSnapshot();
+
+    return (messageIndex: number) => {
+        // 获取当前快照的消息数组
+        const currentMessages = Array.isArray(currentSnapshot.data)
+            ? currentSnapshot.data
+            : currentSnapshot.data.messages || [];
+
+        // 裁剪消息数组到指定索引（包含该索引）
+        const slicedMessages = currentMessages.slice(0, messageIndex + 1);
+
+        // 创建新的快照数据
+        const newSnapshotData = {messages: slicedMessages};
+        const newSnapshot = createSnapshotNode(ChangeType.Slice, newSnapshotData);
+
+        // 添加到快照树
+        addSnapshotChild(currentSnapshot, newSnapshot);
+
+        // 切换到新快照
+        setCurrentSnapshot(newSnapshot.id);
+
+        return newSnapshot;
+    };
+};

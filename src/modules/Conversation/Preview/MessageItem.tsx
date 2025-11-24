@@ -39,10 +39,11 @@ interface MessageItemProps {
     onCopyAsMarkdown: (index: number) => void;
     onCopyToThis: (index: number) => void;
     onEditMessage: (index: number, newContent: string) => void;
+    onSliceToThis: (index: number) => void;
 }
 
 export default function MessageItem(props: MessageItemProps) {
-    const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage} = props;
+    const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage, onSliceToThis} = props;
     const {role, content} = message;
     const [isEditing, setIsEditing] = useState(false);
     const styles = getMessageStyles(role);
@@ -79,6 +80,7 @@ export default function MessageItem(props: MessageItemProps) {
                 onCopyAsMarkdown={() => onCopyAsMarkdown(index)}
                 onCopyToThis={() => onCopyToThis(index)}
                 onEdit={handleEdit}
+                onSliceToThis={() => onSliceToThis(index)}
             />
         );
     };

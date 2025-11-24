@@ -4,6 +4,7 @@ import {atom, useAtomValue, useSetAtom} from 'jotai';
 export const enum TaskType {
     EditMessage = 'EditMessage',
     ModelGeneration = 'ModelGeneration',
+    SliceMessage = 'SliceMessage',
 }
 
 // 任务状态枚举
@@ -33,8 +34,15 @@ export interface ModelGenerationTask extends BaseTask {
     modelId: string;
 }
 
+// 裁剪消息任务
+export interface SliceMessageTask extends BaseTask {
+    type: TaskType.SliceMessage;
+    snapshotId: string;
+    messageIndex: number; // 裁剪到的消息索引
+}
+
 // 任务联合类型
-export type Task = EditMessageTask | ModelGenerationTask;
+export type Task = EditMessageTask | ModelGenerationTask | SliceMessageTask;
 
 // 任务补丁类型
 export type TaskPatch = Partial<Omit<Task, 'id' | 'timestamp' | 'type'>>;
@@ -52,5 +60,24 @@ export function useUpdateTaskById() {
     return (id: string, patch: TaskPatch) => {
         const updateCallback = (task: Task) => task.id === id ? {...task, ...patch} : task;
         setTaskList(prev => prev.map(updateCallback));
+    };
+}
+
+// 创建裁剪消息任务
+export function useCreateSliceTask() {
+    const setTaskList = useSetAtom(taskListAtom);
+
+    return (snapshotId: string, messageIndex: number) => {
+        const newTask: SliceMessageTask = {
+            id: crypto.randomUUID(),
+            timestamp: Date.now(),
+            status: TaskStatus.Completed,
+            type: TaskType.SliceMessage,
+            snapshotId,
+            messageIndex,
+        };
+
+        setTaskList(prev => [...prev, newTask]);
+        return newTask;
     };
 }

@@ -1,5 +1,5 @@
 import {MdPlayCircle, MdError, MdCheckCircle, MdArrowForward} from 'react-icons/md';
-import type {Task} from '@/atoms/taskList';
+import type {Task, SliceMessageTask} from '@/atoms/taskList';
 import {TaskStatus, TaskType} from '@/atoms/taskList';
 import {useSetTaskDrawerOpen, useSetInputPanelView} from '@/atoms/ui';
 import {formatToTimeString} from '@/utils/string';
@@ -28,6 +28,8 @@ const getTaskTypeLabel = (task: Task) => {
             return 'Edit Message';
         case TaskType.ModelGeneration:
             return `Generate (${task.modelId})`;
+        case TaskType.SliceMessage:
+            return `Slice (#${(task as SliceMessageTask).messageIndex + 1})`;
         default:
             return 'Unknown Task';
     }
