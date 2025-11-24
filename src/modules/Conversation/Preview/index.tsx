@@ -69,7 +69,7 @@ export default function Preview() {
             ChangeType.EditContent,
             updatedData
         );
-        addSnapshotChild(currentSnapshot, newNode);
+        addSnapshotChild(currentSnapshot.id, newNode);
         setCurrentSnapshot(newNode.id);
 
         // 创建编辑消息任务

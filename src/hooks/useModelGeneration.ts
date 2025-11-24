@@ -45,7 +45,7 @@ export function useModelGeneration() {
                 }
             );
 
-            addSnapshotChild(currentSnapshot, newSnapshot);
+            addSnapshotChild(currentSnapshot.id, newSnapshot);
 
             updateTaskById(taskId, {status: TaskStatus.Completed, snapshotId: newSnapshot.id});
         }
