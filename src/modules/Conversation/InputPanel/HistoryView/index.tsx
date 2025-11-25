@@ -1,9 +1,8 @@
+import styled from '@emotion/styled';
 import MermaidChart from '@/components/MermaidChart';
 import {useSnapshotRootValue, useCurrentSnapshot, useSetCurrentSnapshot} from '@/atoms/conversation';
-import {useSetInputPanelView} from '@/atoms/ui';
 import type {SnapshotNode} from '../../interface';
 import {treeToGitGraphList} from './utils';
-import styled from '@emotion/styled';
 
 function findNodeById(node: SnapshotNode, id: string): SnapshotNode | null {
     if (node.id === id) {
@@ -34,7 +33,6 @@ const HistoryView = () => {
     const root = useSnapshotRootValue();
     const current = useCurrentSnapshot();
     const setCurrentSnapshot = useSetCurrentSnapshot();
-    const setInputPanelView = useSetInputPanelView();
 
     const handleNodeClick = (event: React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLElement;
@@ -48,7 +46,6 @@ const HistoryView = () => {
         const found = findNodeById(root, nodeId);
         if (found) {
             setCurrentSnapshot(found.id);
-            setInputPanelView('source');
         }
     };
 
