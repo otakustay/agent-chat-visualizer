@@ -27,22 +27,19 @@ export function useModelGeneration() {
         try {
             const content = await llmApi.generateText(request);
 
-            const messages = 'messages' in currentSnapshot.data
-                ? currentSnapshot.data.messages
-                : currentSnapshot.data;
+            const messages = currentSnapshot.data;
 
             const newSnapshot = createSnapshotNode(
                 `generate-${request.modelId}-${getCurrentTimestamp()}`,
                 ChangeType.GenerateByModel,
-                {
-                    messages: [
-                        ...messages,
-                        {
-                            role: 'assistant' as const,
-                            content: content,
-                        },
-                    ],
-                }
+                [
+                    ...messages,
+                    {
+                        role: 'assistant' as const,
+                        content: content,
+                        id: crypto.randomUUID(),
+                    },
+                ]
             );
 
             addSnapshotChild(currentSnapshot.id, newSnapshot);

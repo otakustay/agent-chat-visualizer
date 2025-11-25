@@ -4,7 +4,12 @@ import {useSetTaskDrawerOpen, useInputPanelView, useSetInputPanelView} from '@/a
 import TaskListDrawer from '@/modules/Conversation/TaskList/TaskListDrawer';
 import TaskListButton from '@/modules/Conversation/TaskList/TaskListButton';
 import {ConversationSchema} from '../interface';
-import type {ConversationData} from '../interface';
+import type {ConversationData, RawConversationData} from '../interface';
+
+function convertToInternalData(input: RawConversationData): ConversationData {
+    const messages = Array.isArray(input) ? input : input.messages;
+    return messages.map(message => ({...message, id: crypto.randomUUID()}));
+}
 
 interface HeaderProps {
     onDataChange: (data: ConversationData) => void;
@@ -27,7 +32,8 @@ const Header = ({onDataChange}: HeaderProps) => {
                 return;
             }
 
-            onDataChange(result.data);
+            const internalData = convertToInternalData(result.data);
+            onDataChange(internalData);
             setCurrentView('source');
             toast.success('JSON validated and pasted successfully');
         }

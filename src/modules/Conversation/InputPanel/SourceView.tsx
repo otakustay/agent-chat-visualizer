@@ -39,11 +39,10 @@ const renderEmptyPlaceholder = () => (
 const SourceView = () => {
     const currentSnapshot = useCurrentSnapshot();
     const {data} = currentSnapshot;
-    const hasMessages = 'messages' in data ? data.messages.length > 0 : data.length > 0;
 
     return (
         <div className="h-full flex flex-col">
-            {hasMessages ? <JsonView data={data} highlight={false} /> : renderEmptyPlaceholder()}
+            {data.length > 0 ? <JsonView data={data} highlight={false} /> : renderEmptyPlaceholder()}
         </div>
     );
 };

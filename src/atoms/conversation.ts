@@ -1,4 +1,4 @@
-import {atom, useAtom, useSetAtom} from 'jotai';
+import {atom, useAtom, useSetAtom, useAtomValue} from 'jotai';
 import type {ConversationData, SnapshotNode} from '../modules/Conversation/interface';
 import {ChangeType} from '../modules/Conversation/interface';
 import {getCurrentTimestamp} from '@/utils/time';
@@ -15,7 +15,7 @@ export function createSnapshotNode(id: string, changeType: ChangeType, data: Con
 }
 
 const conversationKeyAtom = atom<string>(crypto.randomUUID());
-const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode('initial', ChangeType.Initial, {messages: []}));
+const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode('initial', ChangeType.Initial, []));
 const currentSnapshotIdAtom = atom<string>('initial');
 
 export const useConversationKey = () => useAtom(conversationKeyAtom);
@@ -101,17 +101,13 @@ export const useSliceToThis = () => {
     const setCurrentSnapshot = useSetCurrentSnapshot();
 
     return (messageIndex: number) => {
-        const currentMessages = Array.isArray(currentSnapshot.data)
-            ? currentSnapshot.data
-            : currentSnapshot.data.messages || [];
-
+        const currentMessages = currentSnapshot.data;
         const slicedMessages = currentMessages.slice(0, messageIndex + 1);
 
-        const newSnapshotData = {messages: slicedMessages};
         const newSnapshot = createSnapshotNode(
             `slice-${messageIndex + 1}-${getCurrentTimestamp()}`,
             ChangeType.Slice,
-            newSnapshotData
+            slicedMessages
         );
 
         addSnapshotChild(currentSnapshot.id, newSnapshot);
@@ -121,3 +117,40 @@ export const useSliceToThis = () => {
         return newSnapshot;
     };
 };
+
+// 新增折叠状态atom
+const messageCollapseStateAtom = atom<Record<string, boolean>>({});
+
+export function useMessageCollapseStateValue() {
+    return useAtomValue(messageCollapseStateAtom);
+}
+
+export function useSetMessageCollapseState() {
+    return useSetAtom(messageCollapseStateAtom);
+}
+
+export function useToggleMessageCollapse() {
+    const setCollapseState = useSetMessageCollapseState();
+
+    return (messageId: string, collapsed: boolean) => {
+        setCollapseState(prev => ({...prev, [messageId]: collapsed}));
+    };
+}
+
+export function useMessageCollapsed(messageId: string) {
+    const collapseState = useMessageCollapseStateValue();
+    return collapseState[messageId] ?? false;
+}
+
+export function useCollapseAllAbove() {
+    const setCollapseState = useSetMessageCollapseState();
+    const currentSnapshot = useCurrentSnapshot();
+
+    return (currentMessageIndex: number) => {
+        const messages = currentSnapshot.data;
+        const newCollapsedEntries = messages.slice(0, currentMessageIndex).map(message => [message.id, true]);
+        const newCollapsed = Object.fromEntries(newCollapsedEntries);
+
+        setCollapseState(prev => ({...prev, ...newCollapsed}));
+    };
+}

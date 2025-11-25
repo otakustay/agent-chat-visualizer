@@ -1,8 +1,10 @@
 import {useState} from 'react';
 import {Element} from 'react-scroll';
 import {Waypoint} from 'react-waypoint';
+import {FiChevronDown, FiChevronRight} from 'react-icons/fi';
 import type {ConversationMessageItem} from '../interface';
 import {preprocessXmlToCodeBlock} from '../utils/string';
+import {useMessageCollapsed, useToggleMessageCollapse} from '@/atoms/conversation';
 import MarkdownContent from './MarkdownContent';
 import MarkdownEditor from './MarkdownEditor';
 import MessageOperations from './MessageOperations';
@@ -36,24 +38,28 @@ interface MessageItemProps {
     message: ConversationMessageItem;
     index: number;
     onEnter: (index: number) => void;
-    onCopyAsMarkdown: (index: number) => void;
-    onCopyToThis: (index: number) => void;
-    onEditMessage: (index: number, newContent: string) => void;
-    onSliceToThis: (index: number) => void;
+    onCopyAsMarkdown: (messageId: string) => void;
+    onCopyToThis: (messageId: string) => void;
+    onEditMessage: (messageId: string, newContent: string) => void;
+    onSliceToThis: (messageId: string) => void;
+    onCollapseAllAbove: (messageId: string) => void;
 }
 
 export default function MessageItem(props: MessageItemProps) {
-    const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage, onSliceToThis} = props;
-    const {role, content} = message;
+    const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage, onSliceToThis, onCollapseAllAbove} =
+        props;
+    const {role, content, id} = message;
     const [isEditing, setIsEditing] = useState(false);
     const styles = getMessageStyles(role);
+    const isCollapsed = useMessageCollapsed(id);
+    const toggleCollapse = useToggleMessageCollapse();
 
     const handleEdit = () => {
         setIsEditing(true);
     };
 
     const handleSave = (newContent: string) => {
-        onEditMessage(index, newContent);
+        onEditMessage(message.id, newContent);
         setIsEditing(false);
     };
 
@@ -62,12 +68,31 @@ export default function MessageItem(props: MessageItemProps) {
     };
 
     const renderContent = () => {
+        if (isCollapsed) {
+            return (
+                <div className="text-gray-500 text-xs italic">
+                    Collapsed ({content.length} characters)
+                </div>
+            );
+        }
         const processedContent = preprocessXmlToCodeBlock(content);
         return <MarkdownContent content={processedContent} />;
     };
 
     const renderEditor = () => {
         return <MarkdownEditor content={content} onSave={handleSave} onCancel={handleCancel} />;
+    };
+
+    const renderCollapseButton = () => {
+        return (
+            <button
+                onClick={() => toggleCollapse(id, !isCollapsed)}
+                className="p-1 hover:bg-gray-200 rounded transition-colors"
+                title={isCollapsed ? 'Expand message' : 'Collapse message'}
+            >
+                {isCollapsed ? <FiChevronRight size={14} /> : <FiChevronDown size={14} />}
+            </button>
+        );
     };
 
     const renderOperations = () => {
@@ -77,10 +102,11 @@ export default function MessageItem(props: MessageItemProps) {
 
         return (
             <MessageOperations
-                onCopyAsMarkdown={() => onCopyAsMarkdown(index)}
-                onCopyToThis={() => onCopyToThis(index)}
+                onCopyAsMarkdown={() => onCopyAsMarkdown(message.id)}
+                onCopyToThis={() => onCopyToThis(message.id)}
                 onEdit={handleEdit}
-                onSliceToThis={() => onSliceToThis(index)}
+                onSliceToThis={() => onSliceToThis(message.id)}
+                onCollapseAllAbove={() => onCollapseAllAbove(message.id)}
             />
         );
     };
@@ -94,8 +120,11 @@ export default function MessageItem(props: MessageItemProps) {
                     bottomOffset="100%"
                 />
                 <div className="flex items-center justify-between mb-2">
-                    <div className="text-xs text-gray-500 font-medium uppercase">
-                        {role}
+                    <div className="flex items-center gap-2">
+                        {renderCollapseButton()}
+                        <div className="text-xs text-gray-500 font-medium uppercase">
+                            {role}
+                        </div>
                     </div>
                     {renderOperations()}
                 </div>

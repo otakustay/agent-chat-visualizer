@@ -1,4 +1,4 @@
-import {FiCopy, FiEdit, FiTrendingUp, FiMoreVertical, FiScissors} from 'react-icons/fi';
+import {FiCopy, FiEdit, FiTrendingUp, FiMoreVertical, FiScissors, FiChevronsUp} from 'react-icons/fi';
 import type {MenuOption} from '@/components/MenuDropdown';
 import MenuDropdown from '@/components/MenuDropdown';
 
@@ -7,10 +7,10 @@ interface MessageOperationsProps {
     onCopyToThis: () => void;
     onEdit: () => void;
     onSliceToThis: () => void;
+    onCollapseAllAbove: () => void;
 }
-
 export default function MessageOperations(
-    {onCopyAsMarkdown, onCopyToThis, onEdit, onSliceToThis}: MessageOperationsProps,
+    {onCopyAsMarkdown, onCopyToThis, onEdit, onSliceToThis, onCollapseAllAbove}: MessageOperationsProps,
 ) {
     const options: MenuOption[] = [
         {
@@ -32,6 +32,11 @@ export default function MessageOperations(
             label: 'Slice To This',
             onClick: onSliceToThis,
             icon: <FiScissors className="w-4 h-4" />,
+        },
+        {
+            label: 'Collapse all Above',
+            onClick: onCollapseAllAbove,
+            icon: <FiChevronsUp className="w-4 h-4" />,
         },
     ];
 

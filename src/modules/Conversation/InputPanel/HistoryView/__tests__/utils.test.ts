@@ -9,7 +9,7 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [],
         };
 
@@ -23,13 +23,13 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [
                 {
                     id: 'B',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [],
                 },
             ],
@@ -45,20 +45,20 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [
                 {
                     id: 'B',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [],
                 },
                 {
                     id: 'C',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [],
                 },
             ],
@@ -81,25 +81,25 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [
                 {
                     id: 'B',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [
                         {
                             id: 'C',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [
                                 {
                                     id: 'D',
                                     timestamp: Date.now(),
                                     changeType: ChangeType.EditContent,
-                                    data: {messages: []},
+                                    data: [],
                                     children: [],
                                 },
                             ],
@@ -108,13 +108,13 @@ describe('treeToGitGraphList', () => {
                             id: 'E',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [
                                 {
                                     id: 'F',
                                     timestamp: Date.now(),
                                     changeType: ChangeType.EditContent,
-                                    data: {messages: []},
+                                    data: [],
                                     children: [],
                                 },
                             ],
@@ -123,7 +123,7 @@ describe('treeToGitGraphList', () => {
                             id: 'G',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                     ],
@@ -132,13 +132,13 @@ describe('treeToGitGraphList', () => {
                     id: 'H',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [
                         {
                             id: 'I',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                     ],
@@ -174,19 +174,19 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [
                 {
                     id: 'B',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [
                         {
                             id: 'C',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                     ],
@@ -208,26 +208,26 @@ describe('treeToGitGraphList', () => {
             id: 'A',
             timestamp: Date.now(),
             changeType: ChangeType.Initial,
-            data: {messages: []},
+            data: [],
             children: [
                 {
                     id: 'B',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [
                         {
                             id: 'D',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                         {
                             id: 'E',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                     ],
@@ -236,20 +236,20 @@ describe('treeToGitGraphList', () => {
                     id: 'C',
                     timestamp: Date.now(),
                     changeType: ChangeType.EditContent,
-                    data: {messages: []},
+                    data: [],
                     children: [
                         {
                             id: 'F',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                         {
                             id: 'G',
                             timestamp: Date.now(),
                             changeType: ChangeType.EditContent,
-                            data: {messages: []},
+                            data: [],
                             children: [],
                         },
                     ],

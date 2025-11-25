@@ -31,12 +31,8 @@ export default function ModelGenerationDrawer() {
         }
 
         try {
-            const messages = 'messages' in currentSnapshot.data
-                ? currentSnapshot.data.messages
-                : currentSnapshot.data;
-
             for (const modelId of selectedModels) {
-                void generateForModel({apiKey, modelId, messages});
+                void generateForModel({apiKey, modelId, messages: currentSnapshot.data});
             }
 
             setOpen(false);

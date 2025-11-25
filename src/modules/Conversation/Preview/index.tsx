@@ -10,6 +10,7 @@ import {
     useSetCurrentSnapshot,
     createSnapshotNode,
     useSliceToThis,
+    useCollapseAllAbove,
 } from '@/atoms/conversation';
 import {ChangeType} from '../interface';
 import type {ConversationMessageItem} from '../interface';
@@ -21,6 +22,14 @@ import KeyboardKey from './KeyboardKey';
 import MessageItem from './MessageItem';
 import NavigationButton from './NavigationButton';
 import ModelGenerationDrawer from '../ModelGenerationDrawer';
+
+function forkWithEdit(message: ConversationMessageItem, newContent: string): ConversationMessageItem {
+    return {
+        ...message,
+        content: newContent,
+        id: crypto.randomUUID(),
+    };
+}
 
 function PreviewHeader() {
     return (
@@ -45,29 +54,21 @@ export default function Preview() {
     const createTask = useCreateTask();
     const setModelGenerationDrawerOpen = useSetModelGenerationDrawerOpen();
     const sliceToThis = useSliceToThis();
+    const collapseAllAbove = useCollapseAllAbove();
     const createSliceTask = useCreateSliceTask();
     const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const messages = currentSnapshot.data;
 
-    const messages = 'messages' in currentSnapshot.data
-        ? currentSnapshot.data.messages
-        : currentSnapshot.data;
-
-    const handleEditMessage = (index: number, newContent: string) => {
-        const updatedMessages = [...messages];
-        updatedMessages[index] = {
-            ...updatedMessages[index],
-            content: newContent,
-        };
-
-        const updatedData = 'messages' in currentSnapshot.data
-            ? {...currentSnapshot.data, messages: updatedMessages}
-            : updatedMessages;
+    const handleEditMessage = (messageId: string, newContent: string) => {
+        const updatedMessages = messages.map(message =>
+            message.id === messageId ? forkWithEdit(message, newContent) : message
+        );
 
         const newNode = createSnapshotNode(
             `edit-${toTimeString(getCurrentTimestamp())}`,
             ChangeType.EditContent,
-            updatedData
+            updatedMessages
         );
         addSnapshotChild(currentSnapshot.id, newNode);
         setCurrentSnapshot(newNode.id);
@@ -75,32 +76,48 @@ export default function Preview() {
         // 创建编辑消息任务
         createTask(TaskType.EditMessage, newNode.id);
     };
-    const handleCopyAsMarkdown = async (index: number) => {
+    const handleCopyAsMarkdown = async (messageId: string) => {
         try {
-            const message = messages[index];
-            await navigator.clipboard.writeText(message.content);
-            toast.success('Message content copied to clipboard');
+            const message = messages.find(m => m.id === messageId);
+            if (message) {
+                await navigator.clipboard.writeText(message.content);
+                toast.success('Message content copied to clipboard');
+            }
         }
         catch {
             toast.error('Copy failed, please try again');
         }
     };
 
-    const handleCopyToThis = async (index: number) => {
+    const handleCopyToThis = async (messageId: string) => {
         try {
-            const messagesToCopy = messages.slice(0, index + 1);
-            await navigator.clipboard.writeText(JSON.stringify(messagesToCopy, null, 2));
-            toast.success(`${messagesToCopy.length} messages copied`);
+            const messageIndex = messages.findIndex(m => m.id === messageId);
+            if (messageIndex !== -1) {
+                const messagesToCopy = messages.slice(0, messageIndex + 1);
+                await navigator.clipboard.writeText(JSON.stringify(messagesToCopy, null, 2));
+                toast.success(`${messagesToCopy.length} messages copied`);
+            }
         }
         catch {
             toast.error('Copy failed, please try again');
         }
     };
 
-    const handleSliceToThis = (index: number) => {
-        const newSnapshot = sliceToThis(index);
-        createSliceTask(newSnapshot.id, index);
-        toast.success(`Conversation sliced to message #${index + 1}`);
+    const handleSliceToThis = (messageId: string) => {
+        const messageIndex = messages.findIndex(m => m.id === messageId);
+        if (messageIndex !== -1) {
+            const newSnapshot = sliceToThis(messageIndex);
+            createSliceTask(newSnapshot.id, messageIndex);
+            toast.success(`Conversation sliced to message #${messageIndex + 1}`);
+        }
+    };
+
+    const handleCollapseAllAbove = (messageId: string) => {
+        const messageIndex = messages.findIndex(m => m.id === messageId);
+        if (messageIndex > 0) {
+            collapseAllAbove(messageIndex);
+            toast.success(`Collapsed ${messageIndex} messages above`);
+        }
     };
 
     const handleMessageEnter = (index: number) => {
@@ -154,6 +171,7 @@ export default function Preview() {
             onCopyToThis={handleCopyToThis}
             onEditMessage={handleEditMessage}
             onSliceToThis={handleSliceToThis}
+            onCollapseAllAbove={handleCollapseAllAbove}
         />
     );
 
