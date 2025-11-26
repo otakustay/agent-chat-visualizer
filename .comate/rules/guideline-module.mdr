@@ -5,26 +5,68 @@ alwaysApply: false
 ---
 ## 项目模块
 
-“模块”是系统中的一个概念，指代一个独立的业务功能，所有模块存放在`src/modules`目录下。
+"模块"是系统中的一个概念，指代一个独立的业务功能，所有模块存放在`src/modules`目录下。
 
-从技术角度，原则上一个模块对应一个顶级的路由，比如“产品介绍”对应路由`/about`，对应模块`/src/modules/About`目录。
+### 顶级模块定义
 
-每一个模块目录下有一个`index.tsx`，使用默认导出提供顶层路由对应的组件，如：
+**顶级模块**是指直接位于 `src/modules/` 下的第一层目录，如：
+- `src/modules/About/` - 顶级模块
+- `src/modules/Conversation/` - 顶级模块
+- `src/modules/Conversation/InputPanel/` - **不是**顶级模块（子组件）
+- `src/modules/Conversation/TaskList/` - **不是**顶级模块（子组件）
+
+从技术角度，**顶级模块**对应一个顶级的路由，比如"产品介绍"对应路由`/about`，对应模块`/src/modules/About`目录。
+
+**仅适用于顶级模块**：每一个顶级模块目录下有一个`index.tsx`，使用默认导出提供顶层路由对应的组件，组件名称必须为模块名称加上`Module`后缀：
 
 ```tsx
+// src/modules/about/index.tsx
 export default function AboutModule() {
+    return ...;
+}
+
+// src/modules/conversation/index.tsx
+export default function ConversationModule() {
     return ...;
 }
 ```
 
-这些模块随后被`src/components/App.tsx`引入，如：
+### 路由引入
+
+顶级模块随后被`src/components/App.tsx`引入，如：
 
 ```tsx
 import About from '@modules/About';
+import Conversation from '@modules/Conversation';
 
 <Routes>
-    <Route path="/about" elements={<About />} />
+    <Route path="/about" element={<About />} />
+    <Route path="/conversation" element={<Conversation />} />
 </Routes>
 ```
 
-通常来说，模块下的`index.tsx`中的组件名称为模块名称加上`Module`后缀。
+### 判断标准
+
+在检查模块命名时，使用以下标准：
+
+1. **文件路径判断**：检查文件路径是否为 `src/modules/{ModuleName}/index.tsx`
+2. **路由对应判断**：检查该模块是否在 `src/components/App.tsx` 中有对应的路由配置
+3. **命名规范判断**：
+   - 如果是顶级模块：组件名必须是 `{ModuleName}Module`
+   - 如果是子组件：组件名不能有 `Module` 后缀
+
+### 示例对比
+
+```
+src/modules/
+├── About/                    # 顶级模块
+│   └── index.tsx            # → AboutModule
+├── Conversation/             # 顶级模块
+│   ├── index.tsx            # → ConversationModule
+│   ├── InputPanel/          # 子组件
+│   │   └── index.tsx        # → InputPanel
+│   └── TaskList/            # 子组件
+│       ├── index.tsx        # → TaskList
+│       └── TaskItem/        # 子组件
+│           └── index.tsx    # → TaskItem
+```

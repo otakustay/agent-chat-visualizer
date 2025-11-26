@@ -3,7 +3,7 @@ import {z} from 'zod';
 // 保留原始类型用于验证用户输入
 const MessageSchema = z.object({role: z.enum(['system', 'assistant', 'user']), content: z.string()});
 const MessageArraySchema = z.array(MessageSchema);
-const MessageObjectSchema = z.object({messages: MessageArraySchema});
+const MessageObjectSchema = z.object({model: z.string().optional(), messages: MessageArraySchema});
 const ConversationSchema = z.union([MessageArraySchema, MessageObjectSchema]);
 
 export type RawConversationMessageItem = z.infer<typeof MessageSchema>;
@@ -14,6 +14,7 @@ export interface ConversationMessageItem {
     role: 'system' | 'assistant' | 'user';
     content: string;
     id: string;
+    model: string;
 }
 
 export type ConversationData = ConversationMessageItem[];

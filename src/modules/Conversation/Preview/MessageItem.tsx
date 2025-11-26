@@ -48,7 +48,7 @@ interface MessageItemProps {
 export default function MessageItem(props: MessageItemProps) {
     const {message, index, onEnter, onCopyAsMarkdown, onCopyToThis, onEditMessage, onSliceToThis, onCollapseAllAbove} =
         props;
-    const {role, content, id} = message;
+    const {role, content, id, model} = message;
     const [isEditing, setIsEditing] = useState(false);
     const styles = getMessageStyles(role);
     const isCollapsed = useMessageCollapsed(id);
@@ -111,6 +111,17 @@ export default function MessageItem(props: MessageItemProps) {
         );
     };
 
+    const renderModelInfo = () => {
+        if (role === 'assistant' && model) {
+            return (
+                <div className="text-xs text-gray-600 ml-2">
+                    {model}
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <Element name={`message-${index}`}>
             <div className={`rounded-lg p-3 mb-4 scroll-mt-[60px] ${styles.container}`}>
@@ -125,6 +136,7 @@ export default function MessageItem(props: MessageItemProps) {
                         <div className="text-xs text-gray-500 font-medium uppercase">
                             {role}
                         </div>
+                        {renderModelInfo()}
                     </div>
                     {renderOperations()}
                 </div>

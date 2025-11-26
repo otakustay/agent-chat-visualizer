@@ -8,7 +8,8 @@ import type {ConversationData, RawConversationData} from '../interface';
 
 function convertToInternalData(input: RawConversationData): ConversationData {
     const messages = Array.isArray(input) ? input : input.messages;
-    return messages.map(message => ({...message, id: crypto.randomUUID()}));
+    const model = Array.isArray(input) ? 'unknown' : input.model ?? 'unknown';
+    return messages.map(message => ({...message, model, id: crypto.randomUUID()}));
 }
 
 interface HeaderProps {

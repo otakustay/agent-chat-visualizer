@@ -27,6 +27,7 @@ function forkWithEdit(message: ConversationMessageItem, newContent: string): Con
     return {
         ...message,
         content: newContent,
+        model: `${message.model} (edited)`,
         id: crypto.randomUUID(),
     };
 }

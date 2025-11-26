@@ -37,6 +37,7 @@ export function useModelGeneration() {
                     {
                         role: 'assistant' as const,
                         content: content,
+                        model: request.modelId,
                         id: crypto.randomUUID(),
                     },
                 ]
