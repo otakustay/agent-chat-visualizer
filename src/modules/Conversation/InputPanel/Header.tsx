@@ -1,25 +1,30 @@
 import {MdContentPaste, MdHistory, MdSource} from 'react-icons/md';
 import {toast} from 'react-hot-toast';
 import {useSetTaskDrawerOpen, useInputPanelView, useSetInputPanelView} from '@/atoms/ui';
+import {useUpdateInputData} from '@/atoms/conversation';
 import TaskListDrawer from '@/modules/Conversation/TaskList/TaskListDrawer';
 import TaskListButton from '@/modules/Conversation/TaskList/TaskListButton';
 import {ConversationSchema} from '../interface';
-import type {ConversationData, RawConversationData} from '../interface';
 
-function convertToInternalData(input: RawConversationData): ConversationData {
-    const messages = Array.isArray(input) ? input : input.messages;
-    const model = Array.isArray(input) ? 'unknown' : input.model ?? 'unknown';
-    return messages.map(message => ({...message, model, id: crypto.randomUUID()}));
-}
+const FIXED_PASTE_DATA = {
+    messages: [
+        {
+            role: 'user',
+            content: '这是一个预设的测试消息',
+        },
+        {
+            role: 'assistant',
+            content: '这是对预设测试消息的回复',
+        },
+    ],
+    model: 'gpt-3.5-turbo',
+};
 
-interface HeaderProps {
-    onDataChange: (data: ConversationData) => void;
-}
-
-const Header = ({onDataChange}: HeaderProps) => {
+const Header = () => {
     const setTaskDrawerOpen = useSetTaskDrawerOpen();
     const currentView = useInputPanelView();
     const setCurrentView = useSetInputPanelView();
+    const updateInputData = useUpdateInputData();
 
     const handlePaste = async () => {
         try {
@@ -33,9 +38,7 @@ const Header = ({onDataChange}: HeaderProps) => {
                 return;
             }
 
-            const internalData = convertToInternalData(result.data);
-            onDataChange(internalData);
-            setCurrentView('source');
+            updateInputData(result.data);
             toast.success('JSON validated and pasted successfully');
         }
         catch (ex) {
@@ -52,6 +55,17 @@ const Header = ({onDataChange}: HeaderProps) => {
         setCurrentView(currentView === 'source' ? 'history' : 'source');
     };
 
+    const handleAutoPaste = () => {
+        const result = ConversationSchema.safeParse(FIXED_PASTE_DATA);
+        if (result.success) {
+            updateInputData(result.data);
+            toast.success('Fixed data pasted successfully');
+        }
+        else {
+            toast.error('Fixed data format is invalid');
+        }
+    };
+
     return (
         <>
             <div className="flex items-center gap-2 p-2 border-b border-gray-300 border-r border-gray-300">
@@ -62,6 +76,14 @@ const Header = ({onDataChange}: HeaderProps) => {
                 >
                     <MdContentPaste size={16} />
                     Paste
+                </button>
+                <button
+                    id="auto-paste-button"
+                    style={{display: 'none'}}
+                    type="button"
+                    onClick={handleAutoPaste}
+                >
+                    Auto Paste
                 </button>
                 <div className="flex items-center gap-1 ml-auto">
                     <TaskListButton onClick={() => setTaskDrawerOpen(true)} />

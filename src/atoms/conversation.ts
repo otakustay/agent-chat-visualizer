@@ -1,7 +1,8 @@
 import {atom, useAtom, useSetAtom, useAtomValue} from 'jotai';
-import type {ConversationData, SnapshotNode} from '../modules/Conversation/interface';
+import type {ConversationData, SnapshotNode, RawConversationData} from '../modules/Conversation/interface';
 import {ChangeType} from '../modules/Conversation/interface';
 import {getCurrentTimestamp} from '@/utils/time';
+import {useSetInputPanelView} from './ui';
 
 export function createSnapshotNode(id: string, changeType: ChangeType, data: ConversationData): SnapshotNode {
     const timestamp = getCurrentTimestamp();
@@ -19,6 +20,7 @@ const snapshotRootAtom = atom<SnapshotNode>(createSnapshotNode('initial', Change
 const currentSnapshotIdAtom = atom<string>('initial');
 
 export const useConversationKey = () => useAtom(conversationKeyAtom);
+export const useSetConversationKey = () => useSetAtom(conversationKeyAtom);
 
 export const useSnapshotRootValue = () => useAtom(snapshotRootAtom)[0];
 
@@ -152,5 +154,24 @@ export function useCollapseAllAbove() {
         const newCollapsed = Object.fromEntries(newCollapsedEntries);
 
         setCollapseState(prev => ({...prev, ...newCollapsed}));
+    };
+}
+
+export function useUpdateInputData() {
+    const setConversationKey = useSetConversationKey();
+    const setSnapshotRoot = useSetSnapshotRoot();
+    const setCurrentSnapshot = useSetCurrentSnapshot();
+    const setCurrentView = useSetInputPanelView();
+
+    return (rawData: RawConversationData) => {
+        const messages = Array.isArray(rawData) ? rawData : rawData.messages;
+        const model = Array.isArray(rawData) ? 'unknown' : rawData.model ?? 'unknown';
+        const internalData = messages.map(message => ({...message, model, id: crypto.randomUUID()}));
+
+        setConversationKey(crypto.randomUUID());
+        const newRoot = createSnapshotNode('initial', ChangeType.Initial, internalData);
+        setSnapshotRoot(newRoot);
+        setCurrentSnapshot(newRoot.id);
+        setCurrentView('source');
     };
 }
