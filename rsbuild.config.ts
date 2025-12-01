@@ -24,6 +24,12 @@ const config: RsbuildConfig = {
     },
     dev: {
         progressBar: false,
+        watchFiles: {
+            paths: ['src/**', 'public/**'],
+            options: {
+                ignored: ['**/.comate/**'],
+            },
+        },
     },
     html: {
         favicon: './public/favicon.svg',

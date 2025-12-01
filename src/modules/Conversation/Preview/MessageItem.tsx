@@ -5,6 +5,7 @@ import {FiChevronDown, FiChevronRight} from 'react-icons/fi';
 import type {ConversationMessageItem} from '../interface';
 import {preprocessXmlToCodeBlock} from '../utils/string';
 import {useMessageCollapsed, useToggleMessageCollapse} from '@/atoms/conversation';
+import {detectUserMessageType, extractFirstXmlTag, toPascalCase} from '@/utils/string';
 import MarkdownContent from './MarkdownContent';
 import MarkdownEditor from './MarkdownEditor';
 import MessageOperations from './MessageOperations';
@@ -69,9 +70,29 @@ export default function MessageItem(props: MessageItemProps) {
 
     const renderContent = () => {
         if (isCollapsed) {
+            let displayText = '';
+
+            if (role === 'user') {
+                const userType = detectUserMessageType(content);
+                displayText = userType ? `${userType} (${content.length} characters)` : `${content.length} characters`;
+            }
+            else if (role === 'assistant') {
+                const firstTag = extractFirstXmlTag(content);
+                if (firstTag) {
+                    const tagDisplayName = toPascalCase(firstTag);
+                    displayText = `${tagDisplayName} (${content.length} characters)`;
+                }
+                else {
+                    displayText = `${content.length} characters`;
+                }
+            }
+            else {
+                displayText = `${content.length} characters`;
+            }
+
             return (
                 <div className="text-gray-500 text-xs italic">
-                    Collapsed ({content.length} characters)
+                    {displayText}
                 </div>
             );
         }
